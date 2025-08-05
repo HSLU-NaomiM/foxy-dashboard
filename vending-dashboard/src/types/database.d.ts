@@ -18,16 +18,6 @@ export interface Alert {
   alert_severity: "error" | "warning" | "offline" | "ok";
 }
 
-export interface AlertWithMachine {
-  alert_id: number;
-  alert_name: string;
-  alert_severity: "error" | "warning" | "offline" | "ok";
-  machine_id: string;
-  machine_name: string;
-  start_time: string | null;
-}
-
-
 export interface MaintenanceLog {
   maintenance_id: string;
   machine_id: string;
@@ -48,9 +38,16 @@ export interface Product {
   product_name?: string;
 }
 
-export interface AlertWithMachine extends Alert {
+export interface AlertWithMachine {
+  alert_id: number;
+  alert_name: string;
+  alert_severity: "error" | "warning" | "offline" | "ok";
   machine_id: string;
   machine_name: string;
+  start_time: string | null;
+  machine_alert_id: string;
+  machine_location: string;
+  machine_revenue: number;
 }
 
 export type MachineAlertLog = {
@@ -87,7 +84,11 @@ export type MachineWithStatus = {
   alert_severity: "error" | "warning" | "offline" | "ok" | null;
   start_time: string | null;
   machine_status: "online" | "offline" | "error" | "warning" | null;
+  machine_alert_id: string | null;
+  currency?: string | null;
 };
+
+
 
 export type MonthlyRevenue = {
   machine_id: string | null
@@ -95,5 +96,6 @@ export type MonthlyRevenue = {
   total_revenue: number | null
   total_transactions: number | null
   machine_name: string
-  currency?: string // Optional – für spätere Erweiterung
+  currency?: string 
 }
+

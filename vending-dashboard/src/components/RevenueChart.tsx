@@ -1,3 +1,4 @@
+// src/components/RevenueChart.tsx
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts'
