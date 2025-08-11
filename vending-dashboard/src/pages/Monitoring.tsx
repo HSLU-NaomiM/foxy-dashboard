@@ -19,7 +19,7 @@ export default function Monitoring() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [mitigationNote, setMitigationNote] = useState("");
-  const [onlyFaulty, setOnlyFaulty] = useState(true);
+  const [onlyFaulty, setOnlyFaulty] = useState(false);
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -82,7 +82,6 @@ export default function Monitoring() {
   };
 
   const handleResolve = async () => {
-    console.log("🚀 handleResolve triggered", selectedAlertId, mitigationNote);
     if (!selectedAlertId) return;
 
     const { error: updateError } = await supabase
@@ -139,7 +138,6 @@ export default function Monitoring() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        console.log("⚠️ Alert ID", machine.alert.machine_alert_id);
                         setSelectedAlertId(machine.alert.machine_alert_id);
                         setMitigationNote("");
                         setOpenDialog(true);
