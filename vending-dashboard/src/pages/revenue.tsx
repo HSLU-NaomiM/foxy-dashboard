@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient'
 import RevenueChart from '@/components/RevenueChart'
 import RevenueTable from '@/components/RevenueTable'
 import { MonthlyRevenue } from '@/types/database'
+import { useTranslation } from 'react-i18next'
 
 type Machine = {
   machine_id: string
@@ -11,6 +12,7 @@ type Machine = {
 }
 
 export default function RevenuePage() {
+  const { t } = useTranslation()
   const [data, setData] = useState<MonthlyRevenue[]>([])
   const [machines, setMachines] = useState<Machine[]>([])
   const [selectedMachine, setSelectedMachine] = useState<string | 'all'>('all')
@@ -65,7 +67,7 @@ export default function RevenuePage() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Revenue Übersicht</h1>
+      <h1 className="text-2xl font-bold">{t('revenuePage.title')}</h1>
 
       <div className="flex flex-wrap gap-4">
         <select
@@ -73,7 +75,7 @@ export default function RevenuePage() {
           value={selectedMachine}
           onChange={(e) => setSelectedMachine(e.target.value)}
         >
-          <option value="all">Alle Automaten</option>
+          <option value="all">{t('revenuePage.selectMachine')}</option>
           {machines.map((m) => (
             <option key={m.machine_id} value={m.machine_id}>
               {m.machine_name}

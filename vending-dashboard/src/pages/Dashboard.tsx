@@ -12,6 +12,7 @@ import {
 import type { MachineWithStatus, AlertWithMachine } from "@/types/database";
 import { Icon } from "lucide-react";
 import { foxFaceTail } from "@lucide/lab";
+import { useTranslation } from "react-i18next";
 
 function parseMachines(data: any[]): MachineWithStatus[] {
   return data.map((m) => ({
@@ -44,6 +45,7 @@ function parseAlerts(data: any[]): AlertWithMachine[] {
 }
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const [machines, setMachines] = useState<MachineWithStatus[]>([]);
   const [alerts, setAlerts] = useState<AlertWithMachine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,29 +116,28 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <Icon iconNode={foxFaceTail} className="w-10 h-10 text-zinc-800 dark:text-zinc-100" />
             <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl">
-              Vending Machine Dashboard
+              {t('dashboard.title')}
             </h1>
           </div>
         </header>
 
-        {/* <main className="grid grid-cols-1 lg:grid-cols-2 gap-5"> */}
         <main className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8">
           <Card className="bg-white dark:bg-zinc-1000 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-lg p-2"> 
             <CardHeader>
-              <CardTitle className="text-xl font-bold">Vending Machines</CardTitle>
+              <CardTitle className="text-xl font-bold">{t('machineDetails.title')}</CardTitle>
               <CardDescription>
-                Machines and their current alert status.
+                {t('machineDetails.status')}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {loading && <div className="p-4 text-center text-gray-500">Loading...</div>}
+              {loading && <div className="p-4 text-center text-gray-500">{t('dashboard.loading', 'Loading...')}</div>}
               {error && <div className="p-4 text-center text-red-500">{error}</div>}
               {!loading && !error && machinesForTable.length > 0 ? (
                 <VendingMachinesTable machines={machinesForTable} />
               ) : (
                 !loading &&
                 !error && (
-                  <div className="p-4 text-center text-gray-500">No machines found.</div>
+                  <div className="p-4 text-center text-gray-500">{t('dashboard.noMachines', 'No machines found.')}</div>
                 )
               )}
             </CardContent>
@@ -144,9 +145,9 @@ export default function Dashboard() {
 
           <Card className="rounded-xl shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold">Current Alerts</CardTitle>
+              <CardTitle className="text-xl font-bold">{t('machineDetails.alerts')}</CardTitle>
               <CardDescription>
-                One open alert per machine (if any).
+                {t('dashboard.revenue')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -155,7 +156,7 @@ export default function Dashboard() {
               ) : (
                 !loading &&
                 !error && (
-                  <div className="p-4 text-center text-gray-500">No active alerts.</div>
+                  <div className="p-4 text-center text-gray-500">{t('dashboard.noAlerts', 'No active alerts.')}</div>
                 )
               )}
             </CardContent>

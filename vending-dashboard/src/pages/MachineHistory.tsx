@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function MachineHistory() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [logs, setLogs] = useState<any[]>([]);
@@ -34,30 +36,30 @@ export default function MachineHistory() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Störungsverlauf</h1>
+        <h1 className="text-2xl font-bold">{t('machineHistory.title')}</h1>
         <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-          Zurück
+          {t('machineHistory.back')}
         </Button>
       </div>
 
-      {error && <p className="text-red-500">Fehler: {error}</p>}
+      {error && <p className="text-red-500">{t('machineHistory.error')}: {error}</p>}
 
       <div className="grid gap-4">
         {logs.map((log, index) => (
           <Card key={index}>
             <CardHeader>
-              <CardTitle>{log.alert_name ?? "Unbekannter Alarm"}</CardTitle>
+              <CardTitle>{log.alert_name ?? t('machineHistory.unknownAlert')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-700">Schweregrad: <strong>{log.alert_severity}</strong></p>
+              <p className="text-sm text-gray-700">{t('machineDetails.status')}: <strong>{log.alert_severity}</strong></p>
               <p className="text-sm text-gray-600">Start: {new Date(log.start_time).toLocaleString()}</p>
               {log.resolved_time ? (
                 <>
-                  <p className="text-sm text-green-700">Behoben: {new Date(log.resolved_time).toLocaleString()}</p>
-                  {log.notes && <p className="text-sm mt-1 text-gray-500">Notiz: {log.notes}</p>}
+                  <p className="text-sm text-green-700">{t('machineDetails.status')}: {new Date(log.resolved_time).toLocaleString()}</p>
+                  {log.notes && <p className="text-sm mt-1 text-gray-500">{t('monitoring.mitigationNote')}: {log.notes}</p>}
                 </>
               ) : (
-                <p className="text-sm text-red-600">Noch nicht behoben</p>
+                <p className="text-sm text-red-600">{t('machineHistory.error')}</p>
               )}
             </CardContent>
           </Card>

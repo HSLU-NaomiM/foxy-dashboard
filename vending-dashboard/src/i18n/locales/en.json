@@ -8,4 +8,69 @@
     "password": "Password",
     "loginButton": "Login"
   }
+  ,
+    "machineDetails": {
+    "title": "Machine Details",
+    "inventory": "Inventory",
+    "alerts": "Alerts",
+    "location": "Location",
+    "revenue": "Revenue",
+    "status": "Status"
+  },
+  "machineHistory": {
+  "title": "Machine History",
+  "back": "Back",
+  "unknownAlert": "Unknown Alert",
+  "error": "Error",
+  "loading": "Loading history...",
+  "noEntries": "No entries found.",
+  "severity": "Severity",
+  "start": "Start",
+  "status": "Status",
+  "resolved": "Resolved",
+  "active": "Active",
+  "ended": "Ended",
+  "mitigationNote": "Mitigation Note",
+  "maintenance": "Maintenance"
+  },
+  "monitoring": {
+    "title": "Monitoring",
+    "faultyOnly": "Show only faulty machines",
+    "mitigationNote": "Mitigation Note",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "upload": {
+    "title": "Upload Data",
+    "selectFile": "Select a file",
+    "supportedTypes": "Only CSV or JSON is supported.",
+    "invalidJson": "Invalid JSON file"
+  },
+  "revenuePage": {
+    "title": "Revenue Overview",
+    "selectMachine": "Select Machine",
+    "selectYear": "Select Year",
+    "totalRevenue": "Total Revenue",
+    "totalTransactions": "Total Transactions",
+    "currency": "Currency"
+  },
+  "revenueTable": {
+    "loading": "Loading revenue…",
+    "noData": "No revenue for this selection.",
+    "month": "Month",
+    "machine": "Machine",
+    "revenue": "Revenue",
+    "transactions": "Transactions",
+    "unknown": "Unknown"
+  },
+  "revenueChart": {
+    "title": "Monthly Revenue",
+    "currency": "CHF",
+    "unknown": "??"
+  },
+  "alertsTable": {
+    "alertName": "Alert Name",
+    "machine": "Machine",
+    "severity": "Severity"
+  }
 }

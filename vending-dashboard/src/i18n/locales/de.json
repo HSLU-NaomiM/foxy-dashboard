@@ -8,4 +8,69 @@
     "password": "Passwort",
     "loginButton": "Einloggen"
   }
+  ,
+    "machineDetails": {
+    "title": "Maschinendetails",
+    "inventory": "Inventar",
+    "alerts": "Störungen",
+    "location": "Standort",
+    "revenue": "Umsatz",
+    "status": "Status"
+  },
+  "machineHistory": {
+  "title": "Störungsverlauf",
+  "back": "Zurück",
+  "unknownAlert": "Unbekannter Alarm",
+  "error": "Fehler",
+  "loading": "Lade Verlauf...",
+  "noEntries": "Keine Einträge gefunden.",
+  "severity": "Schweregrad",
+  "start": "Start",
+  "status": "Status",
+  "resolved": "Behoben",
+  "active": "Aktiv",
+  "ended": "Beendet",
+  "mitigationNote": "Behebungsnotiz",
+  "maintenance": "Wartung"
+  },
+  "monitoring": {
+    "title": "Überwachung",
+    "faultyOnly": "Nur fehlerhafte Maschinen anzeigen",
+    "mitigationNote": "Behebungsnotiz",
+    "submit": "Absenden",
+    "cancel": "Abbrechen"
+  },
+  "upload": {
+    "title": "Daten hochladen",
+    "selectFile": "Datei auswählen",
+    "supportedTypes": "Nur CSV oder JSON wird unterstützt.",
+    "invalidJson": "Ungültige JSON-Datei"
+  },
+  "revenuePage": {
+    "title": "Umsatzübersicht",
+    "selectMachine": "Maschine auswählen",
+    "selectYear": "Jahr auswählen",
+    "totalRevenue": "Gesamtumsatz",
+    "totalTransactions": "Gesamttransaktionen",
+    "currency": "Währung"
+  },
+  "revenueTable": {
+    "loading": "Lade Einnahmen…",
+    "noData": "Keine Einnahmen für diese Auswahl.",
+    "month": "Monat",
+    "machine": "Automat",
+    "revenue": "Einnahmen",
+    "transactions": "Transaktionen",
+    "unknown": "Unbekannt"
+  },
+  "revenueChart": {
+    "title": "Monatliche Einnahmen",
+    "currency": "CHF",
+    "unknown": "??"
+  },
+  "alertsTable": {
+    "alertName": "Alarmname",
+    "machine": "Automat",
+    "severity": "Schweregrad"
+  }
 }

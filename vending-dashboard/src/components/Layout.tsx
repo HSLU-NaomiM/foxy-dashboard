@@ -3,9 +3,11 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 import { Icon } from "lucide-react";
 import { foxFaceTail } from "@lucide/lab";
+import { useTranslation } from "react-i18next";
 
 export default function Layout() {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   const logout = async () => {
     localStorage.removeItem("lastPath");
@@ -34,12 +36,22 @@ export default function Layout() {
           <NavLink to="/revenue" className={linkClass}>Revenue</NavLink>
           <NavLink to="/upload" className={linkClass}>Upload</NavLink>
         </nav>
-        <button
-          onClick={logout}
-          className="text-sm px-4 py-2 rounded-md font-medium bg-red-100 text-red-700 hover:bg-red-200 transition"
-        >
-          Logout
-        </button>
+        <div className="flex items-center gap-2">
+          <select
+            value={i18n.language}
+            onChange={e => i18n.changeLanguage(e.target.value)}
+            className="text-sm px-2 py-1 rounded-md border border-gray-300 bg-gray-50"
+          >
+            <option value="en">EN</option>
+            <option value="de">DE</option>
+          </select>
+          <button
+            onClick={logout}
+            className="text-sm px-4 py-2 rounded-md font-medium bg-red-100 text-red-700 hover:bg-red-200 transition"
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       <main className="p-6 md:p-10 max-w-7xl mx-auto">
