@@ -1,9 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CircleAlert } from "lucide-react";
 import type { Alert } from "@/types/database";
+import type { AlertWithMachine } from "@/types/database";
 
 
-export const AlertsTable = ({ alerts }: { alerts: Alert[] }) => (
+export const AlertsTable = ({ alerts }: { alerts: AlertWithMachine[] }) => (
   <Table className="w-full">
     <TableHeader>
       <TableRow>

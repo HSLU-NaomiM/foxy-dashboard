@@ -1,0 +1,50 @@
+type,sql
+products,"INSERT INTO products (product_id, name, price, shelf_life_days) VALUES (1, 'Opportunity Snack', 3.86, 240);"
+products,"INSERT INTO products (product_id, name, price, shelf_life_days) VALUES (2, 'Girl Snack', 1.43, 240);"
+products,"INSERT INTO products (product_id, name, price, shelf_life_days) VALUES (3, 'Own Snack', 1.39, 240);"
+products,"INSERT INTO products (product_id, name, price, shelf_life_days) VALUES (4, 'Work Snack', 1.99, 90);"
+products,"INSERT INTO products (product_id, name, price, shelf_life_days) VALUES (5, 'Rich Snack', 3.57, 120);"
+machines,"INSERT INTO machines (machine_id, machine_name, machine_location) VALUES ('cb57a13d-62c1-421f-a652-dd7fd5c80ca5', 'Maschine New Brendabury', '701 William Inlet Apt. 873, Shawnberg, SC 81264');"
+machines,"INSERT INTO machines (machine_id, machine_name, machine_location) VALUES ('a625e75b-cf31-4b8d-9401-879b81518713', 'Maschine New Ashleyport', '6403 Ballard Tunnel Suite 794, East Richard, VA 06076');"
+machines,"INSERT INTO machines (machine_id, machine_name, machine_location) VALUES ('a62b8bd3-a236-4755-ac00-0a816e0ead03', 'Maschine Comptonside', '30874 Kevin Center, Sarahfort, NE 88339');"
+deliveries,"INSERT INTO deliveries (batch_id, product_id, delivery_date, best_before_date, quantity) VALUES ('f43b0035-717f-43a2-a1bb-6cb6181d9cbf', 4, '2025-02-16T17:04:09', '2025-09-09T17:04:09', 60);"
+deliveries,"INSERT INTO deliveries (batch_id, product_id, delivery_date, best_before_date, quantity) VALUES ('87e16b5c-ee32-4e83-b7fb-b9a69f1afb73', 3, '2025-06-11T17:05:21', '2026-01-05T17:05:21', 101);"
+deliveries,"INSERT INTO deliveries (batch_id, product_id, delivery_date, best_before_date, quantity) VALUES ('38f3ffc4-5a0f-4160-9fc1-c567d0dc153b', 4, '2025-01-17T08:58:22', '2025-09-02T08:58:22', 99);"
+inventory,"INSERT INTO inventory (
+  inventory_id, machine_id, product_id, batch_id,
+  current_stock, capacity, restocked_at, best_before_date,
+  status, position_id, created_at, updated_at, created_by,
+  shelf_row, shelf_column
+) VALUES (
+  '4a4954f6-2ff5-42fd-b9fa-b1ccbe27a2db', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 4, 'f43b0035-717f-43a2-a1bb-6cb6181d9cbf',
+  50, 78, '2025-01-03T18:15:25', '2025-07-02T18:15:25',
+  'ok', 1, now(), now(), '277b571a-d4f8-40cc-a043-dc1c9f91299b',
+  1, 1
+);"
+inventory,"INSERT INTO inventory (
+  inventory_id, machine_id, product_id, batch_id,
+  current_stock, capacity, restocked_at, best_before_date,
+  status, position_id, created_at, updated_at, created_by,
+  shelf_row, shelf_column
+) VALUES (
+  '0cca2293-769b-42b9-9184-bcccac31b58f', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 3, '87e16b5c-ee32-4e83-b7fb-b9a69f1afb73',
+  37, 74, '2025-01-17T02:33:22', '2025-07-16T02:33:22',
+  'expired', 2, now(), now(), '277b571a-d4f8-40cc-a043-dc1c9f91299b',
+  1, 2
+);"
+inventory,"INSERT INTO inventory (
+  inventory_id, machine_id, product_id, batch_id,
+  current_stock, capacity, restocked_at, best_before_date,
+  status, position_id, created_at, updated_at, created_by,
+  shelf_row, shelf_column
+) VALUES (
+  '1e530d55-f3fd-47a2-bce9-1a311b418e08', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 4, '38f3ffc4-5a0f-4160-9fc1-c567d0dc153b',
+  47, 49, '2025-06-09T19:50:26', '2025-12-06T19:50:26',
+  'low', 3, now(), now(), '277b571a-d4f8-40cc-a043-dc1c9f91299b',
+  1, 3
+);"
+feedback,"INSERT INTO feedback (feedback_id, user_id, machine_id, feedback_text, submitted_at, resolved) VALUES ('e9614b09-90b4-426b-b734-c2cdaed3d9a4', 'f1c2e476-9e7a-4f42-9a62-f976d28681e3', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 'Seek since it his yard.', '2025-03-12T11:38:27', true);"
+feedback,"INSERT INTO feedback (feedback_id, user_id, machine_id, feedback_text, submitted_at, resolved) VALUES ('07a27294-e108-45e8-ad3b-f786f382ff36', 'c5c8537e-19f7-406c-ad6a-640e0e402499', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 'Visit performance near.', '2025-06-25T13:12:18', false);"
+feedback,"INSERT INTO feedback (feedback_id, user_id, machine_id, feedback_text, submitted_at, resolved) VALUES ('bad1d27d-7b3f-4c20-b1d8-60787be6bfe6', '29d8bcf6-409d-400e-83ce-e1cf4acb5c61', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 'Person herself figure people.', '2025-07-19T22:04:01', true);"
+feedback,"INSERT INTO feedback (feedback_id, user_id, machine_id, feedback_text, submitted_at, resolved) VALUES ('04cb1d93-ce45-4349-88cd-9815f30079cc', '918ef2c6-93ae-4f9d-a30e-07bb29b33f61', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 'Month center top parent.', '2025-05-08T12:37:56', true);"
+feedback,"INSERT INTO feedback (feedback_id, user_id, machine_id, feedback_text, submitted_at, resolved) VALUES ('fe43643d-7be5-4e5f-b52a-3523033622a7', '70127072-05a4-42a8-a6db-cce8bc446bd1', 'c3998b67-9779-4d2c-9b45-6d6f8fda6079', 'Arrive conference speak bar night gas.', '2025-01-02T08:53:15', true);"
