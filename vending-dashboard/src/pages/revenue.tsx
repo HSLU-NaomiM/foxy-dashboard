@@ -1,3 +1,4 @@
+// /src/pages/revenue.tsx
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import RevenueChart from '@/components/RevenueChart'

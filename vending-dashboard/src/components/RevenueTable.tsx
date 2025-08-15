@@ -1,3 +1,4 @@
+// src/components/RevenueTable.tsx
 import { format } from 'date-fns'
 import { MonthlyRevenue } from '@/types/database'
 

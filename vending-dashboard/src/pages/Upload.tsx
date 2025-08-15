@@ -1,3 +1,4 @@
+// src/pages/Upload.tsx
 import { useState } from "react";
 import Papa from "papaparse";
 import { supabase } from "../lib/supabaseClient";
@@ -49,10 +50,10 @@ export default function Upload() {
     return rawData.map((row) => ({
         name: row.name || row.Name || row["Produktname"] || "Unbekannt",
         price: parseFloat(row.price || row["Preis"] || "0"),
-        // füge hier weitere Felder hinzu
+        product_id: parseInt(row.product_id || row["ProduktID"] || "0"),
+        shelf_life_days: parseInt(row.shelf_life_days || row["Haltbarkeit"] || "0"),
     }));
     };
-
 
   const uploadToSupabase = async () => {
     if (data.length === 0) return alert("Keine Daten vorhanden!");

@@ -101,13 +101,6 @@ export type Database = {
             foreignKeyName: "feedback_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "feedback_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -115,7 +108,7 @@ export type Database = {
             foreignKeyName: "feedback_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
         ]
@@ -191,13 +184,6 @@ export type Database = {
             foreignKeyName: "inventory_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "inventory_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -205,7 +191,7 @@ export type Database = {
             foreignKeyName: "inventory_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
           {
@@ -260,6 +246,27 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "current_machine_alerts_view"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
             referencedRelation: "machines_with_status"
             referencedColumns: ["alert_id"]
           },
@@ -274,13 +281,6 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "machine_alerts_log_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -288,7 +288,7 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
           {
@@ -364,13 +364,6 @@ export type Database = {
             foreignKeyName: "maintenance_logs_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "maintenance_logs_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -378,7 +371,7 @@ export type Database = {
             foreignKeyName: "maintenance_logs_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
         ]
@@ -406,6 +399,7 @@ export type Database = {
       }
       transactions: {
         Row: {
+          currency: string | null
           inventory_id: string
           machine_id: string
           payment_method: string | null
@@ -417,6 +411,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          currency?: string | null
           inventory_id: string
           machine_id: string
           payment_method?: string | null
@@ -428,6 +423,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          currency?: string | null
           inventory_id?: string
           machine_id?: string
           payment_method?: string | null
@@ -478,13 +474,6 @@ export type Database = {
             foreignKeyName: "transactions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "transactions_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -492,7 +481,7 @@ export type Database = {
             foreignKeyName: "transactions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
           {
@@ -525,7 +514,36 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
+            referencedRelation: "machines"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["machine_id"]
+          },
+        ]
+      }
+      current_machine_alerts_view: {
+        Row: {
+          alert_id: number | null
+          alert_name: string | null
+          alert_severity: string | null
+          machine_alert_id: string | null
+          machine_id: string | null
+          machine_location: string | null
+          machine_name: string | null
+          machine_revenue: number | null
+          start_time: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
             referencedColumns: ["machine_id"]
           },
           {
@@ -539,7 +557,7 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
         ]
@@ -563,13 +581,6 @@ export type Database = {
             foreignKeyName: "transactions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "transactions_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -577,7 +588,7 @@ export type Database = {
             foreignKeyName: "transactions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
         ]
@@ -617,13 +628,6 @@ export type Database = {
             foreignKeyName: "inventory_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "inventory_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -631,7 +635,7 @@ export type Database = {
             foreignKeyName: "inventory_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
           {
@@ -662,6 +666,7 @@ export type Database = {
           alert_id: number | null
           alert_name: string | null
           alert_severity: string | null
+          machine_alert_id: string | null
           machine_id: string | null
           machine_location: string | null
           machine_name: string | null
@@ -669,22 +674,7 @@ export type Database = {
           rn: number | null
           start_time: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "machine_alerts_log_alert_id_fkey"
-            columns: ["alert_id"]
-            isOneToOne: false
-            referencedRelation: "alerts"
-            referencedColumns: ["alert_id"]
-          },
-          {
-            foreignKeyName: "machine_alerts_log_alert_id_fkey"
-            columns: ["alert_id"]
-            isOneToOne: false
-            referencedRelation: "machines_with_status"
-            referencedColumns: ["alert_id"]
-          },
-        ]
+        Relationships: []
       }
       low_stock_inventory: {
         Row: {
@@ -722,13 +712,6 @@ export type Database = {
             foreignKeyName: "inventory_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "inventory_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -736,7 +719,7 @@ export type Database = {
             foreignKeyName: "inventory_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
           {
@@ -745,6 +728,78 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["product_id"]
+          },
+        ]
+      }
+      machine_alert_history_view: {
+        Row: {
+          alert_id: number | null
+          alert_name: string | null
+          alert_notes: string | null
+          alert_severity: string | null
+          machine_alert_id: string | null
+          machine_id: string | null
+          maintenance_notes: string | null
+          maintenance_time: string | null
+          resolved_time: string | null
+          start_time: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "alerts"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "current_machine_alerts_view"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_status"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["machine_id"]
           },
         ]
       }
@@ -769,13 +824,6 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "machine_alerts_log_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -783,7 +831,7 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
         ]
@@ -793,13 +841,12 @@ export type Database = {
           alert_id: number | null
           alert_name: string | null
           alert_severity: string | null
-          is_active: boolean | null
+          machine_alert_id: string | null
           machine_id: string | null
-          machine_location: string | null
-          machine_name: string | null
-          machine_revenue: number | null
+          notes: string | null
           resolved_time: string | null
           start_time: string | null
+          status: string | null
         }
         Relationships: [
           {
@@ -813,16 +860,74 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "current_machine_alerts_view"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
             referencedRelation: "machines_with_status"
             referencedColumns: ["alert_id"]
           },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["machine_id"]
+          },
         ]
+      }
+      machines_with_latest_alert: {
+        Row: {
+          alert_id: number | null
+          alert_name: string | null
+          alert_severity: string | null
+          currency: string | null
+          machine_alert_id: string | null
+          machine_id: string | null
+          machine_location: string | null
+          machine_name: string | null
+          machine_revenue: number | null
+          start_time: string | null
+        }
+        Relationships: []
       }
       machines_with_status: {
         Row: {
           alert_id: number | null
           alert_name: string | null
           alert_severity: string | null
+          machine_alert_id: string | null
           machine_id: string | null
           machine_location: string | null
           machine_name: string | null
@@ -830,7 +935,29 @@ export type Database = {
           machine_status: string | null
           start_time: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "latest_active_alerts_per_machine"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["machine_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["machine_id"]
+          },
+        ]
       }
       monthly_revenue: {
         Row: {
@@ -851,13 +978,6 @@ export type Database = {
             foreignKeyName: "transactions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machine_alerts_view"
-            referencedColumns: ["machine_id"]
-          },
-          {
-            foreignKeyName: "transactions_machine_id_fkey"
-            columns: ["machine_id"]
-            isOneToOne: false
             referencedRelation: "machines"
             referencedColumns: ["machine_id"]
           },
@@ -865,7 +985,7 @@ export type Database = {
             foreignKeyName: "transactions_machine_id_fkey"
             columns: ["machine_id"]
             isOneToOne: false
-            referencedRelation: "machines_with_status"
+            referencedRelation: "machines_with_latest_alert"
             referencedColumns: ["machine_id"]
           },
         ]

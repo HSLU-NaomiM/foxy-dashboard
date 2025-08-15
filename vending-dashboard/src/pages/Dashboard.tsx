@@ -1,4 +1,3 @@
-// src/pages/Dashboard.tsx
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { VendingMachinesTable } from "@/components/VendingMachinesTable";
@@ -10,10 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { MachineWithStatus } from "@/types/database";
+import type { MachineWithStatus, AlertWithMachine } from "@/types/database";
 import { Icon } from "lucide-react";
 import { foxFaceTail } from "@lucide/lab";
-import type { AlertWithMachine } from "@/types/database";
 
 function parseMachines(data: any[]): MachineWithStatus[] {
   return data.map((m) => ({
@@ -25,13 +23,29 @@ function parseMachines(data: any[]): MachineWithStatus[] {
     alert_name: m.alert_name ?? null,
     alert_severity: m.alert_severity ?? null,
     start_time: m.start_time ?? null,
-    machine_status: m.machine_status ?? null,
+    machine_status: null, // optional
+    machine_alert_id: m.machine_alert_id ?? null,
+    currency: m.currency ?? null, // ✅ hinzugefügt
   }));
 }
 
+function parseAlerts(data: any[]): AlertWithMachine[] {
+  return data.map((a) => ({
+    alert_id: a.alert_id,
+    alert_name: a.alert_name,
+    alert_severity: a.alert_severity,
+    machine_id: a.machine_id,
+    machine_name: a.machine_name,
+    start_time: a.start_time,
+    machine_alert_id: a.machine_alert_id,
+    machine_location: a.machine_location,
+    machine_revenue: a.machine_revenue,
+  }));
+}
 
 export default function Dashboard() {
-  const [rawMachines, setRawMachines] = useState<MachineWithStatus[]>([]);
+  const [machines, setMachines] = useState<MachineWithStatus[]>([]);
+  const [alerts, setAlerts] = useState<AlertWithMachine[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,12 +53,18 @@ export default function Dashboard() {
     try {
       setLoading(true);
 
-      const { data, error } = await supabase
-        .from("machines_with_status")
+      const { data: machinesData, error: machinesError } = await supabase
+        .from("machines_with_latest_alert")
         .select("*");
 
-      if (error) throw error;
-      setRawMachines(parseMachines(data ?? []));
+      const { data: alertsData, error: alertsError } = await supabase
+        .from("latest_active_alerts_per_machine")
+        .select("*");
+
+      if (machinesError || alertsError) throw machinesError || alertsError;
+
+      setMachines(parseMachines(machinesData ?? []));
+      setAlerts(parseAlerts(alertsData ?? []));
     } catch (err) {
       console.error("Error fetching data:", err);
       setError("Failed to load data. Check your Supabase setup.");
@@ -71,11 +91,13 @@ export default function Dashboard() {
     };
   }, []);
 
-  const machinesForTable = rawMachines.map((m) => ({
+  const machinesForTable = machines.map((m) => ({
     machine_id: m.machine_id ?? "unknown-id",
     machine_name: m.machine_name ?? "Unknown Machine",
     machine_location: m.machine_location ?? "Unknown Location",
     machine_revenue: m.machine_revenue ?? 0,
+    currency: m.currency ?? "", // ✅ hinzugefügt
+    machine_alert_id: m.machine_alert_id ?? undefined,
     alerts: m.alert_id
       ? {
           alert_id: m.alert_id,
@@ -97,8 +119,9 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-lg p-4">
+        {/* <main className="grid grid-cols-1 lg:grid-cols-2 gap-5"> */}
+        <main className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8">
+          <Card className="bg-white dark:bg-zinc-1000 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-lg p-2"> 
             <CardHeader>
               <CardTitle className="text-xl font-bold">Vending Machines</CardTitle>
               <CardDescription>
@@ -127,21 +150,8 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {!loading && !error && rawMachines.filter((m) => m.alert_id).length > 0 ? (
-                <AlertsTable
-                  alerts={
-                    rawMachines
-                      .filter((m) => m.alert_id && m.machine_id)
-                      .map((m): AlertWithMachine => ({
-                        alert_id: m.alert_id!,
-                        alert_name: m.alert_name ?? "Unknown",
-                        alert_severity: (m.alert_severity ?? "ok") as AlertWithMachine["alert_severity"],
-                        machine_id: m.machine_id!,
-                        machine_name: m.machine_name ?? "Unknown",
-                        start_time: m.start_time ?? null,
-                      }))
-                  }
-                />
+              {!loading && !error && alerts.length > 0 ? (
+                <AlertsTable alerts={alerts} />
               ) : (
                 !loading &&
                 !error && (

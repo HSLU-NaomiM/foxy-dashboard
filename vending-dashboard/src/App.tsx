@@ -12,7 +12,7 @@ import Login from "@/pages/Login";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import AuthListener from "@/components/AuthListener";
 import MachineDetails from "@/pages/MachineDetails";
-import MachineHistory from "@/pages/MachineHistory";
+import MachineHistory from "@/pages/MachineHistory_new";
 import Monitoring from "@/pages/Monitoring";
 import Layout from "@/components/Layout";
 import Revenue from "@/pages/revenue";

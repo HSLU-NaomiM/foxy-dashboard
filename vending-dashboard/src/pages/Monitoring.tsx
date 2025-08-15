@@ -1,9 +1,12 @@
-// src/pages/Monitoring.tsx
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
@@ -14,7 +17,7 @@ export default function Monitoring() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
+  const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
   const [mitigationNote, setMitigationNote] = useState("");
   const [onlyFaulty, setOnlyFaulty] = useState(true);
   const navigate = useNavigate();
@@ -30,8 +33,8 @@ export default function Monitoring() {
       if (machinesError) throw machinesError;
 
       const { data: alertData, error: alertError } = await supabase
-        .from("current_machine_alerts")
-        .select("machine_id, alert_name, alert_severity, start_time");
+        .from("machine_alerts_view")
+        .select("machine_alert_id, machine_id, alert_name, alert_severity, start_time, status");
 
       if (alertError) throw alertError;
 
@@ -43,9 +46,9 @@ export default function Monitoring() {
       const enrichedMachines = machinesData
         .map((m: any) => ({
           ...m,
-          alert: alertMap[m.machine_id] || null
+          alert: alertMap[m.machine_id] || null,
         }))
-        .filter((m) => (onlyFaulty ? m.alert : true));
+        .filter((m) => (onlyFaulty ? m.alert?.status === "active" : true));
 
       setMachines(enrichedMachines);
     } catch (error: any) {
@@ -79,29 +82,27 @@ export default function Monitoring() {
   };
 
   const handleResolve = async () => {
-    if (!selectedMachineId) return;
+    console.log("🚀 handleResolve triggered", selectedAlertId, mitigationNote);
+    if (!selectedAlertId) return;
 
-    const { data: openAlerts, error } = await supabase
-      .from("machine_alerts_log")
-      .select("machine_alert_id")
-      .eq("machine_id", selectedMachineId)
-      .is("resolved_time", null);
-
-    if (error || !openAlerts || openAlerts.length === 0) return;
-
-    const alertId = openAlerts[0].machine_alert_id;
-
-    await supabase
+    const { error: updateError } = await supabase
       .from("machine_alerts_log")
       .update({
         resolved_time: new Date().toISOString(),
-        notes: mitigationNote
+        notes: mitigationNote,
       })
-      .eq("machine_alert_id", alertId);
+      .eq("machine_alert_id", selectedAlertId);
 
+    if (updateError) {
+      toast.error("Fehler beim Aktualisieren");
+      console.error(updateError);
+      return;
+    }
+
+    toast.success("Störung als behoben markiert");
     setOpenDialog(false);
     setMitigationNote("");
-    toast.success("Störung als behoben markiert");
+    setSelectedAlertId(null);
     fetchData();
   };
 
@@ -138,7 +139,9 @@ export default function Monitoring() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        setSelectedMachineId(machine.machine_id);
+                        console.log("⚠️ Alert ID", machine.alert.machine_alert_id);
+                        setSelectedAlertId(machine.alert.machine_alert_id);
+                        setMitigationNote("");
                         setOpenDialog(true);
                       }}
                     >

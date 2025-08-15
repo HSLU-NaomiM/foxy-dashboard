@@ -1,3 +1,4 @@
+// src/components/AlertsTable.tsx
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CircleAlert } from "lucide-react";
 import type { Alert } from "@/types/database";
@@ -15,7 +16,7 @@ export const AlertsTable = ({ alerts }: { alerts: AlertWithMachine[] }) => (
     </TableHeader>
     <TableBody>
       {alerts.map((alert) => (
-        <TableRow key={alert.alert_id}>
+        <TableRow key={alert.machine_alert_id}>
           <TableCell className="font-medium">
             <div className="flex items-center gap-2">
               <CircleAlert className="w-4 h-4 text-gray-500" />
