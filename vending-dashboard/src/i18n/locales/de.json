@@ -1,0 +1,11 @@
+{
+  "dashboard": {
+    "title": "Übersicht",
+    "revenue": "Umsatz"
+  },
+  "login": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "loginButton": "Einloggen"
+  }
+}

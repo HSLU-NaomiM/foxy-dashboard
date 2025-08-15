@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -7,6 +6,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -17,8 +17,8 @@ import Monitoring from "@/pages/Monitoring";
 import Layout from "@/components/Layout";
 import Revenue from "@/pages/revenue";
 import Upload from "@/pages/Upload";
-
-
+import PathTracker from "@/components/PathTracker";
+// import LanguageSwitcher from './components/LanguageSwitcher';
 
 function App() {
   useEffect(() => {
@@ -34,10 +34,10 @@ function App() {
   return (
     <BrowserRouter>
       <AuthListener />
+      <PathTracker /> {/* 👈 NEU: speichert aktuelle Route */}
       <Routes>
         <Route path="/login" element={<Login />} />
 
-        {/* Alles innerhalb dieses Layouts bekommt die NavBar usw. */}
         <Route
           element={
             <ProtectedRoute>
@@ -53,7 +53,15 @@ function App() {
           <Route path="/machine/:id/history" element={<MachineHistory />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={localStorage.getItem("lastPath") || "/dashboard"}
+              replace
+            />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
