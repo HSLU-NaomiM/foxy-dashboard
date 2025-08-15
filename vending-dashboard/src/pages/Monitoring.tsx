@@ -11,8 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Monitoring() {
+  const { t } = useTranslation();
   const [machines, setMachines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,14 +110,14 @@ export default function Monitoring() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Monitoring</h1>
+        <h1 className="text-2xl font-bold">{t('monitoring.title')}</h1>
         <div className="flex items-center gap-2">
-          <span className="text-sm">Nur gestörte anzeigen</span>
+          <span className="text-sm">{t('monitoring.faultyOnly')}</span>
           <Switch checked={onlyFaulty} onCheckedChange={setOnlyFaulty} />
         </div>
       </div>
 
-      {error && <p className="text-red-500 mb-4">Fehler: {error}</p>}
+      {error && <p className="text-red-500 mb-4">{t('machineHistory.error')}: {error}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {machines.map((machine) => (
@@ -127,11 +129,9 @@ export default function Monitoring() {
             <CardContent>
               {machine.alert ? (
                 <div className="flex flex-col gap-2">
-                  <p className={`inline-block px-2 py-1 text-xs rounded w-fit ${getSeverityClass(machine.alert.alert_severity)}`}>
-                    {machine.alert.alert_name}
-                  </p>
+                  <p className={`inline-block px-2 py-1 text-xs rounded w-fit ${getSeverityClass(machine.alert.alert_severity)}`}>{machine.alert.alert_name}</p>
                   <p className="text-xs text-gray-500">
-                    seit {new Date(machine.alert.start_time).toLocaleString()}
+                    {t('monitoring.mitigationNote')}: {new Date(machine.alert.start_time).toLocaleString()}
                   </p>
                   <div className="flex gap-2">
                     <Button
@@ -143,19 +143,19 @@ export default function Monitoring() {
                         setOpenDialog(true);
                       }}
                     >
-                      Beheben
+                      {t('monitoring.submit')}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => navigate(`/machine/${machine.machine_id}/history`)}
                     >
-                      Verlauf
+                      {t('machineHistory.title')}
                     </Button>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500">Keine Störung</p>
+                <p className="text-sm text-gray-500">{t('dashboard.noAlerts', 'No active alerts.')}</p>
               )}
             </CardContent>
           </Card>
@@ -165,18 +165,18 @@ export default function Monitoring() {
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Störung abschliessen</DialogTitle>
+            <DialogTitle>{t('monitoring.mitigationNote')}</DialogTitle>
           </DialogHeader>
           <Textarea
             value={mitigationNote}
             onChange={(e) => setMitigationNote(e.target.value)}
-            placeholder="Was wurde getan, um die Störung zu beheben?"
+            placeholder={t('monitoring.mitigationNote')}
           />
           <DialogFooter>
             <Button variant="secondary" onClick={() => setOpenDialog(false)}>
-              Abbrechen
+              {t('monitoring.cancel')}
             </Button>
-            <Button onClick={handleResolve}>Als behoben markieren</Button>
+            <Button onClick={handleResolve}>{t('monitoring.submit')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

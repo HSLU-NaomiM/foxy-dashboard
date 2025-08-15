@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Papa from "papaparse";
 import { supabase } from "../lib/supabaseClient";
+import { useTranslation } from "react-i18next";
 
 export default function Upload() {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [data, setData] = useState<any[]>([]);
   const [fileType, setFileType] = useState<"csv" | "json" | null>(null);
@@ -22,7 +24,7 @@ export default function Upload() {
       setFileType("json");
       parseJSON(uploadedFile);
     } else {
-      alert("Nur CSV oder JSON wird unterstützt.");
+      alert(t('upload.supportedTypes'));
     }
   };
 
@@ -42,7 +44,7 @@ export default function Upload() {
       const jsonData = JSON.parse(text);
       setData(Array.isArray(jsonData) ? jsonData : [jsonData]);
     } catch (err) {
-      alert("Ungültige JSON-Datei");
+      alert(t('upload.invalidJson'));
     }
   };
   
@@ -74,49 +76,51 @@ export default function Upload() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Daten hochladen</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('upload.title')}</h1>
 
       <input
         type="file"
         accept=".csv,.json"
         onChange={handleFileChange}
-        className="mb-4"
+        className="mb-4 block w-full border border-gray-300 rounded-md p-2"
+        placeholder={t('upload.selectFile')}
       />
 
       {data.length > 0 && (
         <div className="overflow-x-auto mt-6 border rounded-lg">
-          <h2 className="font-semibold text-lg mb-2 px-4 pt-4">Tabellarische Vorschau</h2>
+          <h2 className="font-semibold text-lg mb-2 px-4 pt-4">{t('upload.title')} {t('upload.selectFile')}</h2>
           <table className="min-w-full text-sm text-left text-gray-800">
             <thead className="bg-gray-200">
               <tr>
                 {Object.keys(data[0]).map((key) => (
-                  <th key={key} className="px-4 py-2 font-semibold border-b">{key}</th>
+                  <th key={key} className="px-4 py-2">{key}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {data.slice(0, 10).map((row, rowIndex) => (
-                <tr key={rowIndex} className="even:bg-gray-50">
-                  {Object.values(row).map((value, colIndex) => (
-                    <td key={colIndex} className="px-4 py-2 border-b">
-                      {String(value)}
-                    </td>
+              {data.slice(0, 10).map((row, idx) => (
+                <tr key={idx}>
+                  {Object.values(row).map((val, i) => (
+                    <td key={i} className="px-4 py-2">{String(val)}</td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="text-sm text-gray-500 p-4">
-            {data.length > 10 && `Nur erste 10 von ${data.length} Zeilen dargestellt.`}
-          </p>
+          {data.length > 10 && (
+            <p className="px-4 py-2 text-xs text-gray-500">
+              {`Nur erste 10 von ${data.length} Zeilen dargestellt.`}
+            </p>
+          )}
         </div>
       )}
       <button
-  onClick={uploadToSupabase}
-  className="mt-4 bg-[#3ECF8E] hover:bg-[#36b67c] text-white font-semibold py-2 px-4 rounded"
-    >
-    Uplaod to Supabase
-    </button>
+        onClick={uploadToSupabase}
+        className="mt-4 bg-[#3ECF8E] hover:bg-[#36b67c] text-white font-semibold py-2 px-4 rounded"
+        disabled={!file}
+      >
+        Upload to Supabase
+      </button>
     </div>
   );
 }

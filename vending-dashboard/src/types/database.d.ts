@@ -98,4 +98,3 @@ export type MonthlyRevenue = {
   machine_name: string
   currency?: string 
 }
-

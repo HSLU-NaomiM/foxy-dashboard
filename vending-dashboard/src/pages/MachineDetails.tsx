@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 export default function MachineDetails() {
+  const { t } = useTranslation();
   const { machine_id } = useParams<{ machine_id: string }>();
   const [machine, setMachine] = useState<any | null>(null);
   const [alertLogs, setAlertLogs] = useState<any[]>([]);
@@ -122,7 +124,7 @@ export default function MachineDetails() {
         onClick={() => navigate("/dashboard")}
         className="mb-4 inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
       >
-        ← Zurück
+        ← {t('machineHistory.back')}
       </button>
       {machine ? (
         <Card>
@@ -130,34 +132,34 @@ export default function MachineDetails() {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h1 className="text-2xl font-bold mb-1">{machine.machine_name}</h1>
-                <p className="text-sm text-muted-foreground">Standort: <span className="font-medium">{machine.machine_location}</span></p>
-                <p className="text-sm text-muted-foreground">Umsatz: <span className="text-green-600 font-semibold">CHF {machine.machine_revenue.toFixed(2)}</span></p>
+                <p className="text-sm text-muted-foreground">{t('machineDetails.location')}: <span className="font-medium">{machine.machine_location}</span></p>
+                <p className="text-sm text-muted-foreground">{t('machineDetails.revenue')}: <span className="text-green-600 font-semibold">CHF {machine.machine_revenue.toFixed(2)}</span></p>
               </div>
               {alertLogs[0] && (
                 <span className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${getBadgeClass(alertLogs[0]?.alerts?.alert_severity || "")}`}>
-                  {alertLogs[0]?.alerts?.alert_severity || "Error"}
+                  {alertLogs[0]?.alerts?.alert_severity || t('machineHistory.error')}
                 </span>
               )}
             </div>
 
-            <h2 className="text-lg font-semibold mb-3">🛠 Störungsmeldungen</h2>
+            <h2 className="text-lg font-semibold mb-3">🛠 {t('machineDetails.alerts')}</h2>
             {alertLogs.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Beginn</TableHead>
-                    <TableHead>Beendet</TableHead>
-                    <TableHead>Typ</TableHead>
-                    <TableHead>Schwere</TableHead>
-                    <TableHead>Notiz</TableHead>
+                    <TableHead>{t('machineHistory.title')}</TableHead>
+                    <TableHead>{t('machineDetails.status')}</TableHead>
+                    <TableHead>{t('machineDetails.inventory')}</TableHead>
+                    <TableHead>{t('machineDetails.revenue')}</TableHead>
+                    <TableHead>{t('machineDetails.location')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {alertLogs.map((entry) => (
                     <TableRow key={entry.machine_alert_id}>
                       <TableCell>{new Date(entry.start_time).toLocaleString()}</TableCell>
-                      <TableCell>{entry.resolved_time ? new Date(entry.resolved_time).toLocaleString() : "❗ Offen"}</TableCell>
-                      <TableCell className="font-medium">{entry.alerts?.alert_name || "-"}</TableCell>
+                      <TableCell>{entry.resolved_time ? new Date(entry.resolved_time).toLocaleString() : t('machineHistory.error')}</TableCell>
+                      <TableCell className="font-medium">{entry.alerts?.alert_name || t('machineHistory.unknownAlert')}</TableCell>
                       <TableCell>
                         <span className={`px-2 py-1 rounded text-sm font-medium ${getSeverityStyle(entry.alerts?.alert_severity || "")}`}>
                           {entry.alerts?.alert_severity || "-"}
@@ -169,33 +171,33 @@ export default function MachineDetails() {
                 </TableBody>
               </Table>
             ) : (
-              <p className="text-sm text-muted-foreground mt-2">Keine Störmeldungen gefunden 🎉</p>
+              <p className="text-sm text-muted-foreground mt-2">{t('machineHistory.error')}</p>
             )}
 
-            <h2 className="text-lg font-semibold mt-10 mb-3">📦 Inventar</h2>
+            <h2 className="text-lg font-semibold mt-10 mb-3">📦 {t('machineDetails.inventory')}</h2>
             {inventory.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {inventory.map((item) => (
                   <Card key={item.inventory_id} className="border shadow-sm">
                     <CardContent className="p-4">
                       <h3 className="text-md font-bold mb-1">
-                        {item.products?.name || "Unbekanntes Produkt"}
+                        {item.products?.name || t('upload.selectFile')}
                       </h3>
                       <p className="text-sm text-muted-foreground mb-1">
-                        Lager: <span className="font-medium">{item.current_stock}/{item.capacity}</span>
+                        {t('machineDetails.inventory')}: <span className="font-medium">{item.current_stock}/{item.capacity}</span>
                       </p>
                       <p className="text-sm mb-1">
-                        Preis: <span className="text-green-600 font-semibold">CHF {item.products?.price?.toFixed(2)}</span>
+                        {t('machineDetails.revenue')}: <span className="text-green-600 font-semibold">CHF {item.products?.price?.toFixed(2)}</span>
                       </p>
                       <Badge variant={getStatusColor(item.status)}>
                         {item.status}
                       </Badge>
                       <p className="text-xs text-muted-foreground mt-2">
-                        Fach: {item.shelf_row} / {item.shelf_column}
+                        {t('machineDetails.location')}: {item.shelf_row} / {item.shelf_column}
                       </p>
                       {item.best_before_date && (
                         <p className="text-xs text-red-600 mt-1">
-                          MHD: {new Date(item.best_before_date).toLocaleDateString()}
+                          Expires: {new Date(item.best_before_date).toLocaleDateString()}
                         </p>
                       )}
                     </CardContent>
@@ -206,11 +208,11 @@ export default function MachineDetails() {
               <Skeleton className="h-32 w-full rounded-md" />
             )}
 
-            {error && <p className="text-red-500 mt-4">Fehler: {error}</p>}
+            {error && <p className="text-red-500 mt-4">{t('machineHistory.error')}: {error}</p>}
           </CardContent>
         </Card>
       ) : (
-        <p className="text-sm text-muted-foreground">Lade Maschinendetails...</p>
+        <p className="text-sm text-muted-foreground">{t('machineDetails.title')}...</p>
       )}
     </div>
   );
