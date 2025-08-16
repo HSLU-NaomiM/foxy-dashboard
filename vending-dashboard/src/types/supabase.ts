@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -36,13 +36,15 @@ export type Database = {
         Row: {
           batch_id: string
           best_before_date: string
+          created_by: string | null
           delivery_date: string
           product_id: number | null
           quantity: number
         }
         Insert: {
-          batch_id: string
+          batch_id?: string
           best_before_date: string
+          created_by?: string | null
           delivery_date: string
           product_id?: number | null
           quantity: number
@@ -50,6 +52,7 @@ export type Database = {
         Update: {
           batch_id?: string
           best_before_date?: string
+          created_by?: string | null
           delivery_date?: string
           product_id?: number | null
           quantity?: number
@@ -303,6 +306,7 @@ export type Database = {
       machines: {
         Row: {
           created_at: string | null
+          created_by: string | null
           machine_id: string
           machine_location: string
           machine_name: string
@@ -311,6 +315,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          created_by?: string | null
           machine_id?: string
           machine_location: string
           machine_name: string
@@ -319,6 +324,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          created_by?: string | null
           machine_id?: string
           machine_location?: string
           machine_name?: string
@@ -386,7 +392,7 @@ export type Database = {
         Insert: {
           name: string
           price: number
-          product_id: number
+          product_id?: number
           shelf_life_days: number
         }
         Update: {
