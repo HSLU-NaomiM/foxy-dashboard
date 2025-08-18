@@ -1,9 +1,9 @@
-# vending-dashboard
+# Vending-dashboard
 
-`#ffffff` Machine Operations Dashboard  
+## Machine Operations Dashboard  
 This project is a web-based dashboard designed to monitor and manage machine data, alerts, and maintenance logs. It provides a centralized interface for viewing machine status, tracking real-time alerts, and uploading data from CSV or JSON files to a backend database.
 
-Features
+## Features
 Machines Overview: View a list of all registered machines with key details like ID, name, location, and revenue.
 
 Real-time Alerts: Monitor and manage alerts triggered by machines, with options to resolve or view historical data.
@@ -14,20 +14,20 @@ Data Visualization: A simple diagram to show the percentage of machines with act
 
 Responsive UI: A clean, responsive user interface built with Tailwind CSS.
 
-Technologies Used
+## Technologies Used
 Frontend: React.js
 
 Styling: Tailwind CSS
 
 Backend & Database: Supabase
 
-Getting Started
+## Getting Started
 To run this project locally, follow these steps:
 
-Prerequisites
+## Prerequisites
 You need to have Node.js and npm (or yarn) installed on your machine.
 
-Installation
+## Installation
 Clone the repository:
 
 git clone https://your-repository-url.git
@@ -41,7 +41,7 @@ or
 
 yarn install
 
-Configuration
+## Configuration
 This application uses Supabase as its backend. The Supabase URL and Service Role Key are hardcoded directly into the src/components/Dashboard.js file.
 
 For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them.
@@ -54,7 +54,7 @@ Go to Settings > API.
 
 Copy your Project URL and the service_role key.
 
-Securely Storing Credentials
+## Securely Storing Credentials
 To prevent exposing your sensitive API keys, you should store them in a .env file and access them using process.env.
 
 Create a .env file:
@@ -78,10 +78,10 @@ Add .env to .gitignore:
 Add the .env file to your .gitignore file to ensure it is not committed to your version control. This is the most crucial step for security.
 
 # .gitignore
-...
+...  
 .env
 
-Running the Application
+## Running the Application
 Start the development server:
 
 npm start
