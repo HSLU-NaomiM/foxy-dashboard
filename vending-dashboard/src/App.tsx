@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// src/App.tsx
 import { supabase } from "@/lib/supabaseClient";
 import {
   BrowserRouter,
@@ -20,23 +20,22 @@ import Revenue from "@/pages/revenue";
 import Upload from "@/pages/Upload";
 import PathTracker from "@/components/PathTracker";
 import RevenueMonthDetail from "@/pages/revenue-month-detail";
-// import LanguageSwitcher from './components/LanguageSwitcher';
 
 function App() {
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("AUTH CHANGE:", event, session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  // Removed: no-op auth subscription effect
 
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        // Opt in to React Router v7 behavior
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
+      {/* Runs once at the top-level */}
       <AuthListener />
-      <PathTracker /> {/* 👈 NEU: speichert aktuelle Route */}
+      <PathTracker />
+
       <Routes>
         <Route path="/login" element={<Login />} />
 
@@ -56,6 +55,7 @@ function App() {
           <Route path="/revenue/:year/:month" element={<RevenueMonthDetail />} />
         </Route>
 
+        {/* Fallback */}
         <Route
           path="*"
           element={

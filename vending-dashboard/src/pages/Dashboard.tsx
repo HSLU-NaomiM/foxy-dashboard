@@ -117,8 +117,8 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 p-6 md:p-10 font-inter">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-inter">
+        <div className="mx-auto space-y-8">
         <header className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-3">
             <Icon iconNode={foxFaceTail} className="w-10 h-10 text-zinc-800 dark:text-zinc-100" />
