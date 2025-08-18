@@ -1,7 +1,7 @@
 # Vending-dashboard
 
 
-`#0969DA` This project is a web-based dashboard designed to monitor and manage machine data, alerts, and maintenance logs. It provides a centralized interface for viewing machine status, tracking real-time alerts, and uploading data from CSV or JSON files to a backend database.
+`#0969DA hbghj` This project is a web-based dashboard designed to monitor and manage machine data, alerts, and maintenance logs. It provides a centralized interface for viewing machine status, tracking real-time alerts, and uploading data from CSV or JSON files to a backend database.
 
 ## Features
 Machines Overview: View a list of all registered machines with key details like ID, name, location, and revenue.
