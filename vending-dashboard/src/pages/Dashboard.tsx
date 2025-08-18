@@ -55,21 +55,28 @@ export default function Dashboard() {
     try {
       setLoading(true);
 
-      const { data: machinesData, error: machinesError } = await supabase
-        .from("machines_with_latest_alert")
-        .select("*");
+      const [machinesRes, alertsRes] = await Promise.all([
+        supabase
+          .from("machines_with_latest_alert")
+          .select(
+            "machine_id,machine_name,machine_location,machine_revenue,currency,machine_alert_id,alert_id,alert_name,alert_severity,start_time"
+          )
+          .order("machine_name", { ascending: true }),
+        supabase
+          .from("latest_active_alerts_per_machine")
+          .select(
+            "machine_alert_id,alert_id,alert_name,alert_severity,machine_id,machine_name,machine_location,machine_revenue,currency,start_time,resolved_time"
+          )
+          .order("start_time", { ascending: false }),
+      ]);
 
-      const { data: alertsData, error: alertsError } = await supabase
-        .from("latest_active_alerts_per_machine")
-        .select("*");
+      if (machinesRes.error || alertsRes.error) throw machinesRes.error || alertsRes.error;
 
-      if (machinesError || alertsError) throw machinesError || alertsError;
-
-      setMachines(parseMachines(machinesData ?? []));
-      setAlerts(parseAlerts(alertsData ?? []));
-    } catch (err) {
+      setMachines(parseMachines(machinesRes.data ?? []));
+      setAlerts(parseAlerts(alertsRes.data ?? []));
+    } catch (err: any) {
       console.error("Error fetching data:", err);
-      setError("Failed to load data. Check your Supabase setup.");
+      setError(err?.message ?? "Failed to load data. Check your Supabase setup.");
     } finally {
       setLoading(false);
     }
@@ -98,7 +105,7 @@ export default function Dashboard() {
     machine_name: m.machine_name ?? "Unknown Machine",
     machine_location: m.machine_location ?? "Unknown Location",
     machine_revenue: m.machine_revenue ?? 0,
-    currency: m.currency ?? "", // ✅ hinzugefügt
+    currency: m.currency ?? 'USD',
     machine_alert_id: m.machine_alert_id ?? undefined,
     alerts: m.alert_id
       ? {
@@ -130,17 +137,29 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {loading && <div className="p-4 text-center text-gray-500">{t('dashboard.loading', 'Loading...')}</div>}
-              {error && <div className="p-4 text-center text-red-500">{error}</div>}
+              {loading && (
+                <div className="p-4 text-center text-gray-500">
+                  {t('dashboard.loading', 'Loading...')}
+                </div>
+              )}
+
+              {error && (
+                <div className="p-4 text-center text-red-500">
+                  {error}
+                </div>
+              )}
+
               {!loading && !error && machinesForTable.length > 0 ? (
                 <VendingMachinesTable machines={machinesForTable} />
               ) : (
-                !loading &&
-                !error && (
-                  <div className="p-4 text-center text-gray-500">{t('dashboard.noMachines', 'No machines found.')}</div>
+                !loading && !error && (
+                  <div className="p-4 text-center text-gray-500">
+                    {t('dashboard.noMachines', 'No machines found.')}
+                  </div>
                 )
               )}
             </CardContent>
+
           </Card>
 
           <Card className="rounded-xl shadow-lg">

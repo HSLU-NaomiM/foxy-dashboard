@@ -1,10 +1,16 @@
-// src/components/RevenueTable.tsx
 import { format } from 'date-fns'
-import { MonthlyRevenue } from '@/types/database'
 import { useTranslation } from 'react-i18next'
 
+type Row = {
+  month: string | Date
+  machine_name: string
+  currency: string
+  total_revenue: number
+  transactions_count: number
+}
+
 type Props = {
-  data: MonthlyRevenue[]
+  data: Row[]
   loading: boolean
 }
 
@@ -12,6 +18,9 @@ export default function RevenueTable({ data, loading }: Props) {
   const { t } = useTranslation()
   if (loading) return <p>{t('revenueTable.loading')}</p>
   if (data.length === 0) return <p>{t('revenueTable.noData')}</p>
+
+  const formatCurrency = (value: number, currency: string) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value ?? 0)
 
   return (
     <div className="overflow-x-auto">
@@ -25,18 +34,23 @@ export default function RevenueTable({ data, loading }: Props) {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, i) => (
-            <tr key={i} className="border-t">
-              <td className="p-3">
-                {row.revenue_month ? format(new Date(row.revenue_month), 'MMMM yyyy') : t('revenueTable.unknown')}
-              </td>
-              <td className="p-3">{row.machine_name}</td>
-              <td className="p-3 font-medium">
-                {row.currency ?? 'CHF'} {row.total_revenue?.toFixed(2) ?? '0.00'}
-              </td>
-              <td className="p-3">{row.total_transactions ?? 0}</td>
-            </tr>
-          ))}
+          {data.map((row, i) => {
+            const dt = typeof row.month === 'string' ? new Date(row.month) : row.month
+            const monthLabel = isNaN(dt?.getTime() ?? NaN)
+              ? t('revenueTable.unknown')
+              : format(dt!, 'MMMM yyyy')
+
+            return (
+              <tr key={i} className="border-t">
+                <td className="p-3">{monthLabel}</td>
+                <td className="p-3">{row.machine_name}</td>
+                <td className="p-3 font-medium">
+                  {formatCurrency(row.total_revenue ?? 0, row.currency ?? 'USD')}
+                </td>
+                <td className="p-3">{row.transactions_count ?? 0}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>

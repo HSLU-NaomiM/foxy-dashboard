@@ -19,6 +19,7 @@ import Layout from "@/components/Layout";
 import Revenue from "@/pages/revenue";
 import Upload from "@/pages/Upload";
 import PathTracker from "@/components/PathTracker";
+import RevenueMonthDetail from "@/pages/revenue-month-detail";
 // import LanguageSwitcher from './components/LanguageSwitcher';
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
           <Route path="/upload" element={<Upload />} />
           <Route path="/machine/:machine_id" element={<MachineDetails />} />
           <Route path="/machine/:id/history" element={<MachineHistory />} />
+          <Route path="/revenue/:year/:month" element={<RevenueMonthDetail />} />
         </Route>
 
         <Route

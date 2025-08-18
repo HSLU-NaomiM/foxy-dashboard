@@ -1,101 +1,144 @@
-// /src/pages/revenue.tsx
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabaseClient'
-import RevenueChart from '@/components/RevenueChart'
-import RevenueTable from '@/components/RevenueTable'
-import { MonthlyRevenue } from '@/types/database'
-import { useTranslation } from 'react-i18next'
+// src/pages/revenue.tsx
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import RevenueChart from "@/components/RevenueChart";
+import RevenueTable from "@/components/RevenueTable";
+import MonthSummaryTable from "@/components/MonthSummaryTable";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"; // shadcn
+import { aggregateByMonth, fillMissingMonths } from "@/lib/revenue-helpers";
 
-type Machine = {
-  machine_id: string
-  machine_name: string
-}
+type Row = {
+  month: string;
+  machine_id: string;
+  machine_name: string;
+  machine_location: string | null;
+  currency: string;
+  total_revenue: number;
+  transactions_count: number;
+};
+type MonthRow = {
+  month: string;
+  currency: string;
+  total_revenue: number;
+  transactions_count: number;
+};
 
 export default function RevenuePage() {
-  const { t } = useTranslation()
-  const [data, setData] = useState<MonthlyRevenue[]>([])
-  const [machines, setMachines] = useState<Machine[]>([])
-  const [selectedMachine, setSelectedMachine] = useState<string | 'all'>('all')
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
-  const [loading, setLoading] = useState(true)
+  const [rows, setRows] = useState<Row[]>([]);
+  const [months, setMonths] = useState<MonthRow[]>([]);
+  const [machines, setMachines] = useState<{ machine_id: string; machine_name: string }[]>([]);
+  const [selectedMachine, setSelectedMachine] = useState<string | "all">("all");
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
+    (async () => {
+      setLoading(true); setError(null);
 
-      const { data: rawData, error } = await supabase
-        .from('monthly_revenue')
-        .select('machine_id, revenue_month, total_revenue, total_transactions')
+      const [rev, monthly] = await Promise.all([
+        supabase
+          .from("monthly_revenue")
+          .select("month,machine_id,machine_name,machine_location,currency,total_revenue,transactions_count")
+          .order("month", { ascending: true }),
+        supabase
+          .from("monthly_revenue_by_month")
+          .select("month,currency,total_revenue,transactions_count")
+          .order("month", { ascending: true }),
+      ]);
 
-      if (error) {
-        console.error('Fehler beim Laden der Einnahmen:', error)
-        setLoading(false)
-        return
+      if (rev.error || monthly.error) {
+        setError(rev.error?.message ?? monthly.error?.message ?? "Failed to load revenue");
+        setLoading(false);
+        return;
       }
 
-      const { data: machinesData } = await supabase
-        .from('machines')
-        .select('machine_id, machine_name')
+      setRows((rev.data ?? []) as Row[]);
+      setMonths((monthly.data ?? []) as MonthRow[]);
 
-      const enriched = (rawData ?? []).map((row) => ({
-        machine_id: row.machine_id,
-        revenue_month: row.revenue_month,
-        total_revenue: row.total_revenue,
-        total_transactions: row.total_transactions,
-        machine_name: machinesData?.find((m) => m.machine_id === row.machine_id)?.machine_name ?? 'Unbekannt',
-        currency: 'CHF', // später dynamisch
-      })) as MonthlyRevenue[]
+      const uniqueMachines = Array.from(
+        new Map(((rev.data ?? []) as Row[]).map(r => [r.machine_id, { machine_id: r.machine_id, machine_name: r.machine_name }])).values()
+      );
+      setMachines(uniqueMachines);
 
-      setData(enriched)
-      setMachines(machinesData ?? [])
-      setLoading(false)
+      setLoading(false);
+    })();
+  }, []);
+
+  const availableYears = useMemo(() => {
+    const ys = new Set<number>();
+    for (const r of rows) {
+      const y = r.month ? new Date(r.month).getFullYear() : 0;
+      if (y) ys.add(y);
     }
+    return Array.from(ys).sort((a, b) => a - b);
+  }, [rows]);
 
-    fetchData()
-  }, [])
+  const filteredRows = useMemo(() => {
+    return rows.filter(r => {
+      const y = r.month ? new Date(r.month).getFullYear() : 0;
+      const okY = y === selectedYear;
+      const okM = selectedMachine === "all" || r.machine_id === selectedMachine;
+      return okY && okM;
+    });
+  }, [rows, selectedYear, selectedMachine]);
 
-  const filteredData = data.filter((row) => {
-    const rowYear = row.revenue_month ? new Date(row.revenue_month).getFullYear() : 0
-    const matchesYear = rowYear === selectedYear
-    const matchesMachine = selectedMachine === 'all' || row.machine_id === selectedMachine
-    return matchesYear && matchesMachine
-  })
+  // Aggregierte Daten für den Chart (ein Balken je Monat)
+  const chartData = useMemo(() => {
+    const base = aggregateByMonth(
+      filteredRows.map(r => ({
+        month: r.month, machine_id: r.machine_id, machine_name: r.machine_name,
+        currency: r.currency, total_revenue: r.total_revenue
+      })),
+      selectedMachine,
+      selectedYear
+    );
+    return fillMissingMonths(base, selectedYear).map(x => ({
+      month: x.monthISO, total_revenue: x.total, currency: x.currency,
+    }));
+  }, [filteredRows, selectedMachine, selectedYear]);
 
-  const availableYears = Array.from(
-    new Set(data.map(row => row.revenue_month ? new Date(row.revenue_month).getFullYear() : 0))
-  ).filter(y => y !== 0)
+  // Monatsübersicht (View) auf das gewählte Jahr filtern
+  const monthSummary = useMemo(
+    () => months.filter(m => new Date(m.month).getFullYear() === selectedYear),
+    [months, selectedYear]
+  );
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">{t('revenuePage.title')}</h1>
+      <h1 className="text-2xl font-bold">Revenue Overview</h1>
 
       <div className="flex flex-wrap gap-4">
-        <select
-          className="border p-2 rounded"
-          value={selectedMachine}
-          onChange={(e) => setSelectedMachine(e.target.value)}
-        >
-          <option value="all">{t('revenuePage.selectMachine')}</option>
-          {machines.map((m) => (
-            <option key={m.machine_id} value={m.machine_id}>
-              {m.machine_name}
-            </option>
-          ))}
+        <select className="border p-2 rounded" value={selectedMachine} onChange={(e) => setSelectedMachine(e.target.value)}>
+          <option value="all">Select Machine</option>
+          {machines.map(m => <option key={m.machine_id} value={m.machine_id}>{m.machine_name}</option>)}
         </select>
 
-        <select
-          className="border p-2 rounded"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-        >
-          {availableYears.map((y) => (
-            <option key={y} value={y}>{y}</option>
-          ))}
+        <select className="border p-2 rounded" value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
+          {availableYears.map(y => <option key={y} value={y}>{y}</option>)}
         </select>
       </div>
 
-      <RevenueChart data={filteredData} />
-      <RevenueTable data={filteredData} loading={loading} />
+      {error && <div className="p-4 text-center text-red-500">{error}</div>}
+
+      {/* Chart uses aggregated data */}
+      <RevenueChart data={chartData} />
+
+      {/* Tabs: Month overview vs Machine detail table */}
+      <Tabs defaultValue="overview" className="mt-6">
+        <TabsList>
+          <TabsTrigger value="overview">Monthly overview</TabsTrigger>
+          <TabsTrigger value="machines">Machine details</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview">
+          <MonthSummaryTable rows={monthSummary} />
+        </TabsContent>
+
+        <TabsContent value="machines">
+          <RevenueTable data={filteredRows} loading={loading} />
+        </TabsContent>
+      </Tabs>
     </div>
-  )
+  );
 }
