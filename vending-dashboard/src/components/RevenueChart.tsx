@@ -1,20 +1,30 @@
-// src/components/RevenueChart.tsx
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts'
 import { format } from 'date-fns'
-import { MonthlyRevenue } from '@/types/database'
 import { useTranslation } from 'react-i18next'
 
-type Props = {
-  data: MonthlyRevenue[]
+// Keep it local to decouple from older MonthlyRevenue type
+type Row = {
+  month: string | Date
+  total_revenue: number
+  currency: string
 }
+
+type Props = { data: Row[] }
+
 export default function RevenueChart({ data }: Props) {
   const { t } = useTranslation()
-  const chartData = data.map(d => ({
-    month: d.revenue_month ? format(new Date(d.revenue_month), 'MMM') : t('revenueChart.unknown'),
-    revenue: d.total_revenue ?? 0,
-  }))
+
+  // Build chart data from the new fields
+  const chartData = data.map(d => {
+    const dt = typeof d.month === 'string' ? new Date(d.month) : d.month
+    return {
+      month: isNaN(dt?.getTime() ?? NaN) ? t('revenueChart.unknown') : format(dt!, 'MMM'),
+      revenue: d.total_revenue ?? 0,
+      currency: d.currency ?? 'USD',
+    }
+  })
 
   return (
     <div className="w-full h-64 bg-white rounded shadow p-4">
@@ -24,7 +34,17 @@ export default function RevenueChart({ data }: Props) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
           <YAxis />
-          <Tooltip formatter={(value) => `${t('revenueChart.currency')} ${(value as number).toFixed(2)}`} />
+          <Tooltip
+            formatter={(value, _name, item) => {
+              const ccy = (item?.payload as any)?.currency ?? 'USD'
+              const amt = Number(value ?? 0)
+              // Use Intl for proper currency formatting
+              return [
+                new Intl.NumberFormat('en-US', { style: 'currency', currency: ccy }).format(amt),
+                t('revenueChart.revenueLabel', 'Revenue'),
+              ]
+            }}
+          />
           <Bar dataKey="revenue" fill="#0ea5e9" />
         </BarChart>
       </ResponsiveContainer>
