@@ -1,6 +1,6 @@
 # Vending-dashboard
 
-## Machine Operations Dashboard  
+
 This project is a web-based dashboard designed to monitor and manage machine data, alerts, and maintenance logs. It provides a centralized interface for viewing machine status, tracking real-time alerts, and uploading data from CSV or JSON files to a backend database.
 
 ## Features
