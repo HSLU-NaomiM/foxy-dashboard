@@ -29,7 +29,7 @@ export const databaseSchemas: Partial<Record<TableName, readonly string[]>> = {
   machine_alerts_log: [
     'alert_id','machine_alert_id','machine_id','maintenance_id','notes','resolved_by','resolved_time','start_time'
   ],
-  machines: ['created_at','machine_id','machine_location','machine_name','machine_revenue','updated_at'],
+  machines: ['created_at','machine_id','machine_location','machine_name','machine_revenue','updated_at','currency'],
   maintenance_logs: ['machine_id','maintenance_id','maintenance_type','notes','performed_at','performed_by'],
   products: ['name','price','product_id','shelf_life_days'],
   transactions: [

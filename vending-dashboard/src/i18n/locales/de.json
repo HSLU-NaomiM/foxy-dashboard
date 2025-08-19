@@ -72,5 +72,9 @@
     "alertName": "Alarmname",
     "machine": "Automat",
     "severity": "Schweregrad"
+  },
+  "common": {
+    "ok": "OK",
+    "saving": "Speichern..."
   }
 }

@@ -72,5 +72,9 @@
     "alertName": "Alert Name",
     "machine": "Machine",
     "severity": "Severity"
+  },
+  "common": {
+    "ok": "OK",
+    "saving": "Saving..."
   }
 }

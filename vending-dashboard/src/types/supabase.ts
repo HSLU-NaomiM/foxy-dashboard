@@ -242,6 +242,13 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
             referencedRelation: "machines_with_status"
             referencedColumns: ["alert_id"]
           },
@@ -623,6 +630,13 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
             referencedRelation: "machines_with_status"
             referencedColumns: ["alert_id"]
           },
@@ -722,6 +736,13 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
             referencedRelation: "machines_with_status"
             referencedColumns: ["alert_id"]
           },
@@ -798,6 +819,13 @@ export type Database = {
             foreignKeyName: "machine_alerts_log_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "machines_with_latest_alert"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
             referencedRelation: "machines_with_status"
             referencedColumns: ["alert_id"]
           },
@@ -817,12 +845,27 @@ export type Database = {
           },
         ]
       }
+      machine_timeline: {
+        Row: {
+          alert_name: string | null
+          alert_severity: string | null
+          event_notes: string | null
+          event_time: string | null
+          event_type: string | null
+          machine_alert_id: string | null
+          machine_id: string | null
+          maintenance_id: string | null
+          maintenance_type: string | null
+        }
+        Relationships: []
+      }
       machines_with_latest_alert: {
         Row: {
           alert_id: number | null
           alert_name: string | null
           alert_severity: string | null
           currency: string | null
+          has_history: boolean | null
           machine_alert_id: string | null
           machine_id: string | null
           machine_location: string | null
@@ -830,29 +873,7 @@ export type Database = {
           machine_revenue: number | null
           start_time: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "machine_alerts_log_alert_id_fkey"
-            columns: ["alert_id"]
-            isOneToOne: false
-            referencedRelation: "alerts"
-            referencedColumns: ["alert_id"]
-          },
-          {
-            foreignKeyName: "machine_alerts_log_alert_id_fkey"
-            columns: ["alert_id"]
-            isOneToOne: false
-            referencedRelation: "current_machine_alerts_view"
-            referencedColumns: ["alert_id"]
-          },
-          {
-            foreignKeyName: "machine_alerts_log_alert_id_fkey"
-            columns: ["alert_id"]
-            isOneToOne: false
-            referencedRelation: "machines_with_status"
-            referencedColumns: ["alert_id"]
-          },
-        ]
+        Relationships: []
       }
       machines_with_status: {
         Row: {
