@@ -44,7 +44,7 @@ yarn install
 ## Configuration
 This application uses Supabase as its backend. The Supabase URL and Service Role Key or the public anon key are hardcoded directly into the src/components/Dashboard.js file.
 
-** For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them. **
+**For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them.**
 
 Obtain your Supabase credentials:
 
@@ -61,10 +61,10 @@ Create a .env file:
 Create a new file named .env in the root directory of your project.
 
 Add your credentials to .env:
-Add the following lines to the .env file, replacing the placeholder values with your actual Supabase credentials.
+Add the following lines to the .env file, replacing the placeholder values with your actual Supabase credentials.  
 
 REACT_APP_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL
-REACT_APP_SUPABASE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
+REACT_APP_SUPABASE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY  
 
 Note: Create React App requires custom environment variables to be prefixed with REACT_APP_ for them to be exposed to the application.
 
