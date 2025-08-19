@@ -42,9 +42,9 @@ or
 yarn install
 
 ## Configuration
-This application uses Supabase as its backend. The Supabase URL and Service Role Key are hardcoded directly into the src/components/Dashboard.js file.
+This application uses Supabase as its backend. The Supabase URL and Service Role Key or the public anon key are hardcoded directly into the src/components/Dashboard.js file.
 
-For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them.
+** For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them. **
 
 Obtain your Supabase credentials:
 
