@@ -1,4 +1,41 @@
-{
+  {
+  "upload": {
+    "title": "Upload (Simple)",
+    "description": "CSV/JSON guided uploader. Products → Deliveries → Inventory → Machines.",
+    "targetTable": "Target table",
+    "products": "products",
+    "deliveries": "deliveries",
+    "inventory": "inventory",
+    "machines": "machines",
+    "csvSeparator": "CSV separator",
+    "comma": "Comma (,)",
+    "semicolon": "Semicolon (;)",
+    "tab": "Tab (\\t)",
+    "pipe": "Pipe (|)",
+    "ignoreBatchId": "Ignore batch_id (let DB trigger create it)",
+    "uploading": "Uploading…",
+    "uploadTo": "Upload → {{target}}",
+    "checking": "Checking…",
+    "showLast5": "Show last 5 ({{target}})",
+    "parsedRows": "Parsed rows: {{count}}",
+    "onlyFirst10": "Only first 10 of {{count}} rows shown.",
+    "last5From": "Last 5 from '{{target}}'",
+    "noRows": "No rows.",
+    "sampleTemplates": "Sample CSV templates",
+    "downloadProducts": "Download products.csv",
+    "downloadDeliveries": "Download deliveries.csv",
+    "downloadInventory": "Download inventory.csv",
+    "downloadMachines": "Download machines.csv",
+    "tipBatchId": "Tip: For inventory, you can leave batch_id empty and enable the toggle so the DB trigger creates it.",
+    "expectedColumns": "Expected columns",
+    "productsColumns": "product_id (auto), name, price, shelf_life_days",
+    "deliveriesColumns": "batch_id, product_id, delivery_date, best_before_date, quantity",
+    "inventoryColumns": "machine_id, product_id, (batch_id), current_stock, capacity, restocked_at, best_before_date, status, position_id, shelf_row, shelf_column",
+    "machinesColumns": "machine_id (auto), machine_name, machine_location, machine_revenue",
+    "selectFile": "Select a file",
+    "supportedTypes": "Only CSV or JSON is supported.",
+    "invalidJson": "Invalid JSON file"
+  },
   "dashboard": {
     "title": "Dashboard",
     "revenue": "Revenue"
@@ -40,19 +77,15 @@
     "submit": "Submit",
     "cancel": "Cancel"
   },
-  "upload": {
-    "title": "Upload Data",
-    "selectFile": "Select a file",
-    "supportedTypes": "Only CSV or JSON is supported.",
-    "invalidJson": "Invalid JSON file"
-  },
   "revenuePage": {
     "title": "Revenue Overview",
     "selectMachine": "Select Machine",
     "selectYear": "Select Year",
     "totalRevenue": "Total Revenue",
     "totalTransactions": "Total Transactions",
-    "currency": "Currency"
+    "currency": "Currency",
+    "monthlyOverviewTab": "Monthly overview",
+    "machineDetailsTab": "Machine details"
   },
   "revenueTable": {
     "loading": "Loading revenue…",
@@ -72,5 +105,9 @@
     "alertName": "Alert Name",
     "machine": "Machine",
     "severity": "Severity"
+  },
+  "common": {
+    "ok": "OK",
+    "saving": "Saving..."
   }
 }

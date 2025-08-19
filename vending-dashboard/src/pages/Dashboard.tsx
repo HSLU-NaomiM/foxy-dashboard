@@ -1,3 +1,4 @@
+// src/pages/Dashboard.tsx
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { VendingMachinesTable } from "@/components/VendingMachinesTable";
@@ -14,7 +15,22 @@ import { Icon } from "lucide-react";
 import { foxFaceTail } from "@lucide/lab";
 import { useTranslation } from "react-i18next";
 
-function parseMachines(data: any[]): MachineWithStatus[] {
+// Row type used just for typing .returns()
+type MachinesWithLatestAlertRow = {
+  machine_id: string;
+  machine_name: string | null;
+  machine_location: string | null;
+  machine_revenue: number | null;
+  currency: string | null;
+  machine_alert_id: string | null;
+  alert_id: number | null;
+  alert_name: string | null;
+  alert_severity: "error" | "warning" | "offline" | "ok" | null;
+  start_time: string | null;
+};
+
+// Normalize machines for table
+function parseMachines(data: MachinesWithLatestAlertRow[]): MachineWithStatus[] {
   return data.map((m) => ({
     machine_id: m.machine_id ?? null,
     machine_name: m.machine_name ?? null,
@@ -24,23 +40,24 @@ function parseMachines(data: any[]): MachineWithStatus[] {
     alert_name: m.alert_name ?? null,
     alert_severity: m.alert_severity ?? null,
     start_time: m.start_time ?? null,
-    machine_status: null, // optional
+    machine_status: null,
     machine_alert_id: m.machine_alert_id ?? null,
-    currency: m.currency ?? null, // ✅ hinzugefügt
+    currency: m.currency ?? null,
   }));
 }
 
-function parseAlerts(data: any[]): AlertWithMachine[] {
+// Normalize alerts list (only active)
+function parseAlerts(data: MachinesWithLatestAlertRow[]): AlertWithMachine[] {
   return data.map((a) => ({
-    alert_id: a.alert_id,
-    alert_name: a.alert_name,
-    alert_severity: a.alert_severity,
+    alert_id: a.alert_id!,
+    alert_name: a.alert_name ?? "Unknown",
+    alert_severity: (a.alert_severity ?? "ok") as "error" | "warning" | "offline" | "ok",
     machine_id: a.machine_id,
-    machine_name: a.machine_name,
+    machine_name: a.machine_name ?? "Unknown Machine",
     start_time: a.start_time,
-    machine_alert_id: a.machine_alert_id,
-    machine_location: a.machine_location,
-    machine_revenue: a.machine_revenue,
+    machine_alert_id: a.machine_alert_id!, // non-null because we filter for active alerts
+    machine_location: a.machine_location ?? "Unknown Location",
+    machine_revenue: a.machine_revenue ?? 0,
   }));
 }
 
@@ -54,24 +71,28 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
+      // ✅ Single source of truth for both panels
+      const machinesQuery = supabase
+        .from("machines_with_latest_alert")
+        .select(
+          "machine_id,machine_name,machine_location,machine_revenue,currency,machine_alert_id,alert_id,alert_name,alert_severity,start_time"
+        )
+        .order("machine_name", { ascending: true })
+        .returns<MachinesWithLatestAlertRow[]>();
 
-      const [machinesRes, alertsRes] = await Promise.all([
-        supabase
-          .from("machines_with_latest_alert")
-          .select(
-            "machine_id,machine_name,machine_location,machine_revenue,currency,machine_alert_id,alert_id,alert_name,alert_severity,start_time"
-          )
-          .order("machine_name", { ascending: true }),
-        supabase
-          .from("latest_active_alerts_per_machine")
-          .select(
-            "machine_alert_id,alert_id,alert_name,alert_severity,machine_id,machine_name,machine_location,machine_revenue,currency,start_time,resolved_time"
-          )
-          .order("start_time", { ascending: false }),
-      ]);
+      const alertsQuery = supabase
+        .from("machines_with_latest_alert")
+        .select(
+          "machine_alert_id,alert_id,alert_name,alert_severity,machine_id,machine_name,machine_location,machine_revenue,currency,start_time"
+        )
+        .not("machine_alert_id", "is", null) // <- only active alerts
+        .order("start_time", { ascending: false })
+        .returns<MachinesWithLatestAlertRow[]>();
 
-      if (machinesRes.error || alertsRes.error) throw machinesRes.error || alertsRes.error;
+      const [machinesRes, alertsRes] = await Promise.all([machinesQuery, alertsQuery]);
 
+      if (machinesRes.error) throw machinesRes.error;
+      if (alertsRes.error) throw alertsRes.error;
       setMachines(parseMachines(machinesRes.data ?? []));
       setAlerts(parseAlerts(alertsRes.data ?? []));
     } catch (err: any) {
@@ -85,14 +106,11 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
 
+    // Realtime refresh when alerts or machines change
     const channel = supabase
       .channel("dashboard-listeners")
-      .on("postgres_changes", { event: "*", schema: "public", table: "machine_alerts_log" }, () =>
-        fetchData()
-      )
-      .on("postgres_changes", { event: "*", schema: "public", table: "machines" }, () =>
-        fetchData()
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "machine_alerts_log" }, fetchData)
+      .on("postgres_changes", { event: "*", schema: "public", table: "machines" }, fetchData)
       .subscribe();
 
     return () => {
@@ -105,7 +123,7 @@ export default function Dashboard() {
     machine_name: m.machine_name ?? "Unknown Machine",
     machine_location: m.machine_location ?? "Unknown Location",
     machine_revenue: m.machine_revenue ?? 0,
-    currency: m.currency ?? 'USD',
+    currency: m.currency ?? "USD",
     machine_alert_id: m.machine_alert_id ?? undefined,
     alerts: m.alert_id
       ? {
@@ -117,44 +135,32 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 p-6 md:p-10 font-inter">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-inter">
+      <div className="mx-auto space-y-8">
         <header className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-3">
             <Icon iconNode={foxFaceTail} className="w-10 h-10 text-zinc-800 dark:text-zinc-100" />
             <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl">
-              {t('dashboard.title')}
+              {t("dashboard.title")}
             </h1>
           </div>
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8">
-          <Card className="bg-white dark:bg-zinc-1000 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-lg p-2"> 
+          <Card className="bg-white dark:bg-zinc-1000 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-lg p-2">
             <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('machineDetails.title')}</CardTitle>
-              <CardDescription>
-                {t('machineDetails.status')}
-              </CardDescription>
+              <CardTitle className="text-xl font-bold">{t("machineDetails.title")}</CardTitle>
+              <CardDescription>{t("dashboard.revenue")}</CardDescription>
             </CardHeader>
             <CardContent>
-              {loading && (
-                <div className="p-4 text-center text-gray-500">
-                  {t('dashboard.loading', 'Loading...')}
-                </div>
-              )}
-
-              {error && (
-                <div className="p-4 text-center text-red-500">
-                  {error}
-                </div>
-              )}
-
+              {loading && <div className="p-4 text-center text-gray-500">{t("dashboard.loading", "Loading...")}</div>}
+              {error && <div className="p-4 text-center text-red-500">{error}</div>}
               {!loading && !error && machinesForTable.length > 0 ? (
                 <VendingMachinesTable machines={machinesForTable} />
               ) : (
                 !loading && !error && (
                   <div className="p-4 text-center text-gray-500">
-                    {t('dashboard.noMachines', 'No machines found.')}
+                    {t("dashboard.noMachines", "No machines found.")}
                   </div>
                 )
               )}
@@ -164,18 +170,17 @@ export default function Dashboard() {
 
           <Card className="rounded-xl shadow-lg">
             <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('machineDetails.alerts')}</CardTitle>
-              <CardDescription>
-                {t('dashboard.revenue')}
-              </CardDescription>
+              <CardTitle className="text-xl font-bold">{t("machineDetails.alerts")}</CardTitle>
+              <CardDescription>{t("machineDetails.status")}</CardDescription>
             </CardHeader>
             <CardContent>
               {!loading && !error && alerts.length > 0 ? (
                 <AlertsTable alerts={alerts} />
               ) : (
-                !loading &&
-                !error && (
-                  <div className="p-4 text-center text-gray-500">{t('dashboard.noAlerts', 'No active alerts.')}</div>
+                !loading && !error && (
+                  <div className="p-4 text-center text-gray-500">
+                    {t("dashboard.noAlerts", "No active alerts.")}
+                  </div>
                 )
               )}
             </CardContent>

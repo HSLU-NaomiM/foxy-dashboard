@@ -1,4 +1,41 @@
 {
+  "upload": {
+    "title": "Hochladen (Einfach)",
+    "description": "Geführter CSV/JSON-Uploader. Produkte → Lieferungen → Inventar → Automaten.",
+    "targetTable": "Zieltabelle",
+    "products": "produkte",
+    "deliveries": "lieferungen",
+    "inventory": "inventar",
+    "machines": "automaten",
+    "csvSeparator": "CSV-Trennzeichen",
+    "comma": "Komma (,)",
+    "semicolon": "Semikolon (;)",
+    "tab": "Tab (\\t)",
+    "pipe": "Pipe (|)",
+    "ignoreBatchId": "batch_id ignorieren (DB-Trigger erstellt sie)",
+    "uploading": "Hochladen…",
+    "uploadTo": "Hochladen → {{target}}",
+    "checking": "Prüfe…",
+    "showLast5": "Letzte 5 anzeigen ({{target}})",
+    "parsedRows": "Gelesene Zeilen: {{count}}",
+    "onlyFirst10": "Nur die ersten 10 von {{count}} Zeilen angezeigt.",
+    "last5From": "Letzte 5 aus '{{target}}'",
+    "noRows": "Keine Zeilen.",
+    "sampleTemplates": "Beispiel-CSV-Vorlagen",
+    "downloadProducts": "Produkte.csv herunterladen",
+    "downloadDeliveries": "Lieferungen.csv herunterladen",
+    "downloadInventory": "Inventar.csv herunterladen",
+    "downloadMachines": "Automaten.csv herunterladen",
+    "tipBatchId": "Tipp: Für Inventar kann batch_id leer bleiben und der Schalter aktiviert werden, damit der DB-Trigger sie erstellt.",
+    "expectedColumns": "Erwartete Spalten",
+    "productsColumns": "product_id (auto), name, price, shelf_life_days",
+    "deliveriesColumns": "batch_id, product_id, delivery_date, best_before_date, quantity",
+    "inventoryColumns": "machine_id, product_id, (batch_id), current_stock, capacity, restocked_at, best_before_date, status, position_id, shelf_row, shelf_column",
+    "machinesColumns": "machine_id (auto), machine_name, machine_location, machine_revenue",
+    "selectFile": "Datei auswählen",
+    "supportedTypes": "Nur CSV oder JSON wird unterstützt.",
+    "invalidJson": "Ungültige JSON-Datei"
+  },
   "dashboard": {
     "title": "Übersicht",
     "revenue": "Umsatz"
@@ -40,19 +77,15 @@
     "submit": "Absenden",
     "cancel": "Abbrechen"
   },
-  "upload": {
-    "title": "Daten hochladen",
-    "selectFile": "Datei auswählen",
-    "supportedTypes": "Nur CSV oder JSON wird unterstützt.",
-    "invalidJson": "Ungültige JSON-Datei"
-  },
   "revenuePage": {
     "title": "Umsatzübersicht",
     "selectMachine": "Maschine auswählen",
     "selectYear": "Jahr auswählen",
     "totalRevenue": "Gesamtumsatz",
     "totalTransactions": "Gesamttransaktionen",
-    "currency": "Währung"
+    "currency": "Währung",
+    "monthlyOverviewTab": "Monatsübersicht",
+    "machineDetailsTab": "Automatendetails"
   },
   "revenueTable": {
     "loading": "Lade Einnahmen…",
@@ -72,5 +105,9 @@
     "alertName": "Alarmname",
     "machine": "Automat",
     "severity": "Schweregrad"
+  },
+  "common": {
+    "ok": "OK",
+    "saving": "Speichern..."
   }
 }

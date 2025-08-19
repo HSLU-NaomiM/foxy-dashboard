@@ -7,6 +7,7 @@
 // Comments are in English per your preference
 
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Papa from "papaparse";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -44,6 +45,7 @@ const ORDER_HINTS: Record<Target, { column: string; asc?: boolean }> = {
 };
 
 export default function Upload() {
+  const { t } = useTranslation();
   const [target, setTarget] = useState<Target>("products");
   const [file, setFile] = useState<File | null>(null);
   const [rows, setRows] = useState<any[]>([]);
@@ -239,25 +241,25 @@ export default function Upload() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-4">
-      <h1 className="text-2xl font-bold">Upload (Simple)</h1>
-      <p className="text-sm text-gray-600">CSV/JSON guided uploader. Products → Deliveries → Inventory → Machines.</p>
+      <h1 className="text-2xl font-bold">{t("upload.title")}</h1>
+      <p className="text-sm text-gray-600">{t("upload.description")}</p>
 
       <div className="flex flex-wrap items-center gap-3">
-        <label className="text-sm">Target table</label>
+        <label className="text-sm">{t("upload.targetTable")}</label>
         <select className="border rounded-md p-2" value={target} onChange={(e) => setTarget(e.target.value as Target)}>
-          <option value="products">products</option>
-          <option value="deliveries">deliveries</option>
-          <option value="inventory">inventory</option>
-          <option value="machines">machines</option>
+          <option value="products">{t("upload.products")}</option>
+          <option value="deliveries">{t("upload.deliveries")}</option>
+          <option value="inventory">{t("upload.inventory")}</option>
+          <option value="machines">{t("upload.machines")}</option>
         </select>
 
         <div className="ml-auto flex items-center gap-2">
-          <label className="text-sm">CSV separator</label>
+          <label className="text-sm">{t("upload.csvSeparator")}</label>
           <select className="border rounded-md p-2" value={sep} onChange={(e) => setSep(e.target.value)}>
-            <option value=",">Comma (,)</option>
-            <option value=";">Semicolon (;)</option>
-            <option value="\t">Tab (\\t)</option>
-            <option value="|">Pipe (|)</option>
+            <option value=",">{t("upload.comma")}</option>
+            <option value=";">{t("upload.semicolon")}</option>
+            <option value="\t">{t("upload.tab")}</option>
+            <option value="|">{t("upload.pipe")}</option>
           </select>
         </div>
       </div>
@@ -265,7 +267,7 @@ export default function Upload() {
       {target === "inventory" && (
         <div className="rounded-md border p-3 bg-white flex items-center gap-2">
           <input id="ignore-batch" type="checkbox" className="h-4 w-4" checked={ignoreBatchId} onChange={(e) => setIgnoreBatchId(e.target.checked)} />
-          <label htmlFor="ignore-batch" className="text-sm">Ignore <code className="font-mono">batch_id</code> (let DB trigger create it)</label>
+          <label htmlFor="ignore-batch" className="text-sm">{t("upload.ignoreBatchId")}</label>
         </div>
       )}
 
@@ -273,14 +275,13 @@ export default function Upload() {
 
       <div className="flex items-center gap-3">
         <button className="bg-slate-900 text-white px-4 py-2 rounded disabled:opacity-50" onClick={insertNow} disabled={busy || filteredRows.length === 0}>
-          {busy ? "Uploading…" : `Upload → ${target}`}
+          {busy ? t("upload.uploading") : t("upload.uploadTo", { target: t(`upload.${target}`) })}
         </button>
         <button className="border px-3 py-2 rounded" onClick={fetchLastFive} disabled={checking}>
-          {checking ? "Checking…" : `Show last 5 (${target})`}
+          {checking ? t("upload.checking") : t("upload.showLast5", { target: t(`upload.${target}`) })}
         </button>
-        {rows.length > 0 && <span className="text-sm text-gray-700">Parsed rows: {rows.length}</span>}
+        {rows.length > 0 && <span className="text-sm text-gray-700">{t("upload.parsedRows", { count: rows.length })}</span>}
       </div>
-
       {msg && (
         <div className="text-sm rounded-md border p-3 bg-gray-50">
           <div className="font-mono break-all">{msg}</div>
@@ -309,7 +310,7 @@ export default function Upload() {
             </tbody>
           </table>
           {rows.length > 10 && (
-            <p className="text-xs text-gray-500 px-2 py-1">Only first 10 of {rows.length} rows shown.</p>
+            <p className="text-xs text-gray-500 px-2 py-1">{t("upload.onlyFirst10", { count: rows.length })}</p>
           )}
         </div>
       )}
@@ -317,7 +318,7 @@ export default function Upload() {
       {/* Live check: last 5 rows from DB */}
       {lastRows && (
         <div className="overflow-x-auto mt-4 border rounded-md">
-          <div className="px-2 pt-2 text-sm font-semibold">Last 5 from '{target}'</div>
+          <div className="px-2 pt-2 text-sm font-semibold">{t("upload.last5From", { target: t(`upload.${target}`) })}</div>
           {lastRows.length > 0 ? (
             <table className="min-w-full text-sm">
               <thead className="bg-gray-200">
@@ -338,42 +339,42 @@ export default function Upload() {
               </tbody>
             </table>
           ) : (
-            <div className="px-2 py-2 text-sm text-gray-600">No rows.</div>
+            <div className="px-2 py-2 text-sm text-gray-600">{t("upload.noRows")}</div>
           )}
         </div>
       )}
 
       {/* Sample CSVs */}
       <div className="rounded-md border p-3 bg-white">
-        <div className="font-semibold text-sm mb-2">Sample CSV templates</div>
+        <div className="font-semibold text-sm mb-2">{t("upload.sampleTemplates")}</div>
         <div className="flex flex-wrap gap-2">
-          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("products.csv", samples.products)}>Download products.csv</button>
-          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("deliveries.csv", samples.deliveries)}>Download deliveries.csv</button>
-          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("inventory.csv", samples.inventory)}>Download inventory.csv</button>
-          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("machines.csv", samples.machines)}>Download machines.csv</button>
+          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("products.csv", samples.products)}>{t("upload.downloadProducts")}</button>
+          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("deliveries.csv", samples.deliveries)}>{t("upload.downloadDeliveries")}</button>
+          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("inventory.csv", samples.inventory)}>{t("upload.downloadInventory")}</button>
+          <button className="border rounded px-3 py-1 text-sm" onClick={() => download("machines.csv", samples.machines)}>{t("upload.downloadMachines")}</button>
         </div>
-        <p className="text-xs text-gray-600 mt-2">Tip: For inventory, you can leave <code className="font-mono">batch_id</code> empty and enable the toggle so the DB trigger creates it.</p>
+        <p className="text-xs text-gray-600 mt-2">{t("upload.tipBatchId")}</p>
       </div>
 
       {/* Expected columns legend */}
       <div className="text-xs text-gray-600">
-        <div className="font-semibold mb-1">Expected columns</div>
+        <div className="font-semibold mb-1">{t("upload.expectedColumns")}</div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <div className="font-medium">products</div>
-            <code className="block bg-gray-100 rounded p-2 mt-1">product_id (auto), name, price, shelf_life_days</code>
+            <div className="font-medium">{t("upload.products")}</div>
+            <code className="block bg-gray-100 rounded p-2 mt-1">{t("upload.productsColumns")}</code>
           </div>
           <div>
-            <div className="font-medium">deliveries</div>
-            <code className="block bg-gray-100 rounded p-2 mt-1">batch_id, product_id, delivery_date, best_before_date, quantity</code>
+            <div className="font-medium">{t("upload.deliveries")}</div>
+            <code className="block bg-gray-100 rounded p-2 mt-1">{t("upload.deliveriesColumns")}</code>
           </div>
           <div>
-            <div className="font-medium">inventory</div>
-            <code className="block bg-gray-100 rounded p-2 mt-1">machine_id, product_id, (batch_id), current_stock, capacity, restocked_at, best_before_date, status, position_id, shelf_row, shelf_column</code>
+            <div className="font-medium">{t("upload.inventory")}</div>
+            <code className="block bg-gray-100 rounded p-2 mt-1">{t("upload.inventoryColumns")}</code>
           </div>
           <div>
-            <div className="font-medium">machines</div>
-            <code className="block bg-gray-100 rounded p-2 mt-1">machine_id (auto), machine_name, machine_location, machine_revenue</code>
+            <div className="font-medium">{t("upload.machines")}</div>
+            <code className="block bg-gray-100 rounded p-2 mt-1">{t("upload.machinesColumns")}</code>
           </div>
         </div>
       </div>

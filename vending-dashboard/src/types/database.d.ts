@@ -15,7 +15,7 @@ export interface MachineTableRow extends Machine {
 export interface Alert {
   alert_id: number;
   alert_name: string;
-  alert_severity: "error" | "warning" | "offline" | "ok";
+  alert_severity: "critical" | "error" | "warning" | "offline" | "ok"; 
 }
 
 export interface MaintenanceLog {
@@ -68,6 +68,8 @@ export interface MachineWithLatestAlert {
   machine_name: string | null;
   machine_location: string | null;
   machine_revenue: number | null;
+  currency: string | null;
+  machine_alert_id: string | null;
   alert_id: number | null;
   alert_name: string | null;
   alert_severity: string | null;
