@@ -1,5 +1,6 @@
 // src/pages/revenue.tsx
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabaseClient";
 import RevenueChart from "@/components/RevenueChart";
 import RevenueTable from "@/components/RevenueTable";
@@ -24,6 +25,7 @@ type MonthRow = {
 };
 
 export default function RevenuePage() {
+  const { t } = useTranslation();
   const [rows, setRows] = useState<Row[]>([]);
   const [months, setMonths] = useState<MonthRow[]>([]);
   const [machines, setMachines] = useState<{ machine_id: string; machine_name: string }[]>([]);
@@ -106,11 +108,11 @@ export default function RevenuePage() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Revenue Overview</h1>
+      <h1 className="text-2xl font-bold">{t("revenuePage.title")}</h1>
 
       <div className="flex flex-wrap gap-4">
         <select className="border p-2 rounded" value={selectedMachine} onChange={(e) => setSelectedMachine(e.target.value)}>
-          <option value="all">Select Machine</option>
+          <option value="all">{t("revenuePage.selectMachine")}</option>
           {machines.map(m => <option key={m.machine_id} value={m.machine_id}>{m.machine_name}</option>)}
         </select>
 
@@ -127,8 +129,8 @@ export default function RevenuePage() {
       {/* Tabs: Month overview vs Machine detail table */}
       <Tabs defaultValue="overview" className="mt-6">
         <TabsList>
-          <TabsTrigger value="overview">Monthly overview</TabsTrigger>
-          <TabsTrigger value="machines">Machine details</TabsTrigger>
+          <TabsTrigger value="overview">{t("revenuePage.monthlyOverviewTab", "Monthly overview")}</TabsTrigger>
+          <TabsTrigger value="machines">{t("revenuePage.machineDetailsTab", "Machine details")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
