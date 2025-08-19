@@ -20,6 +20,7 @@ import Revenue from "@/pages/revenue";
 import Upload from "@/pages/Upload";
 import PathTracker from "@/components/PathTracker";
 import RevenueMonthDetail from "@/pages/revenue-month-detail";
+// import LanguageSwitcher from './components/LanguageSwitcher';
 
 function App() {
   // Removed: no-op auth subscription effect

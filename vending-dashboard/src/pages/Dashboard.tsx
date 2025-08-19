@@ -71,7 +71,6 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-
       // ✅ Single source of truth for both panels
       const machinesQuery = supabase
         .from("machines_with_latest_alert")
@@ -94,7 +93,6 @@ export default function Dashboard() {
 
       if (machinesRes.error) throw machinesRes.error;
       if (alertsRes.error) throw alertsRes.error;
-
       setMachines(parseMachines(machinesRes.data ?? []));
       setAlerts(parseAlerts(alertsRes.data ?? []));
     } catch (err: any) {
@@ -167,6 +165,7 @@ export default function Dashboard() {
                 )
               )}
             </CardContent>
+
           </Card>
 
           <Card className="rounded-xl shadow-lg">

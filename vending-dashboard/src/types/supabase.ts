@@ -873,7 +873,29 @@ export type Database = {
           machine_revenue: number | null
           start_time: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "alerts"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "current_machine_alerts_view"
+            referencedColumns: ["alert_id"]
+          },
+          {
+            foreignKeyName: "machine_alerts_log_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "machines_with_status"
+            referencedColumns: ["alert_id"]
+          },
+        ]
       }
       machines_with_status: {
         Row: {

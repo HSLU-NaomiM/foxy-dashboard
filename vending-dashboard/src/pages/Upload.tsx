@@ -282,7 +282,6 @@ export default function Upload() {
         </button>
         {rows.length > 0 && <span className="text-sm text-gray-700">{t("upload.parsedRows", { count: rows.length })}</span>}
       </div>
-
       {msg && (
         <div className="text-sm rounded-md border p-3 bg-gray-50">
           <div className="font-mono break-all">{msg}</div>
