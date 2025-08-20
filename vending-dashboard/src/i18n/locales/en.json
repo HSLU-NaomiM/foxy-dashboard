@@ -101,13 +101,15 @@
     "currency": "CHF",
     "unknown": "??"
   },
-  "alertsTable": {
-    "alertName": "Alert Name",
-    "machine": "Machine",
-    "severity": "Severity"
-  },
   "common": {
     "ok": "OK",
     "saving": "Saving..."
+  },
+  "alertsTable": {
+    "alarmStart": "Alarm Start",
+    "alarmUpdated": "Alarm Updated",
+    "errorMessage": "Error Message",
+    "severity": "Severity",
+    "status": "Status"
   }
 }
