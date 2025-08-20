@@ -23,7 +23,6 @@ Security notes:
 - Fallback uses `localStorage.getItem("lastPath")` for redirect — ensure no injection risk (string only).
 - Auth state synced via Supabase in `AuthListener`, so user sessions are enforced consistently.
 */
-
 import {
   BrowserRouter,
   Routes,
@@ -46,7 +45,6 @@ import PathTracker from "@/components/PathTracker";
 import RevenueMonthDetail from "@/pages/revenue-month-detail";
 // import LanguageSwitcher from './components/LanguageSwitcher';
 import ResetPassword from "@/pages/auth/ResetPassword";
-
 function App() {
   return (
     <BrowserRouter

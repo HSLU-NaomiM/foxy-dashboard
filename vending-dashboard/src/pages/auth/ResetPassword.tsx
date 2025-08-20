@@ -23,7 +23,6 @@
 //   keeping tokens in browser history.
 // - Actual authorization and policy enforcement are handled server-side by Supabase; the client only
 //   invokes `updateUser` for the currently authenticated (recovered) session.
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 

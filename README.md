@@ -42,9 +42,8 @@ or
 yarn install
 
 ## Configuration
-This application uses Supabase as its backend. The Supabase URL and Service Role Key or the public anon key are hardcoded directly into the src/components/Dashboard.js file.
 
-** For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them. **
+**For production use, it is highly recommended to use environment variables to store these keys securely instead of hardcoding them.**
 
 Obtain your Supabase credentials:
 
@@ -52,7 +51,7 @@ Navigate to your Supabase project dashboard.
 
 Go to Settings > API.
 
-Copy your Project URL and the service_role key.
+Copy your Project URL and the ANON key. Take the right one!! The service-role key has admin rights and you don't want that key to end up on the user side of the application!!
 
 ## Securely Storing Credentials
 To prevent exposing your sensitive API keys, you should store them in a .env file and access them using process.env.
@@ -61,10 +60,10 @@ Create a .env file:
 Create a new file named .env in the root directory of your project.
 
 Add your credentials to .env:
-Add the following lines to the .env file, replacing the placeholder values with your actual Supabase credentials.
+Add the following lines to the .env file, replacing the placeholder values with your actual Supabase credentials.  
 
 REACT_APP_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL
-REACT_APP_SUPABASE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
+REACT_APP_SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY  
 
 Note: Create React App requires custom environment variables to be prefixed with REACT_APP_ for them to be exposed to the application.
 
@@ -84,10 +83,7 @@ Add the .env file to your .gitignore file to ensure it is not committed to your 
 ## Running the Application
 Start the development server:
 
-npm start
+npm run dev
 
-or
 
-yarn start
-
-Open your web browser and navigate to http://localhost:3000 to view the application.
+Open your web browser and navigate to http://localhost:5173/ to view the application.
