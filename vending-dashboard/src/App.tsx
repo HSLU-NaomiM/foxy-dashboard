@@ -1,5 +1,4 @@
 // src/App.tsx
-import { supabase } from "@/lib/supabaseClient";
 import {
   BrowserRouter,
   Routes,
@@ -22,13 +21,12 @@ import PathTracker from "@/components/PathTracker";
 import RevenueMonthDetail from "@/pages/revenue-month-detail";
 // import LanguageSwitcher from './components/LanguageSwitcher';
 
-function App() {
-  // Removed: no-op auth subscription effect
+import ResetPassword from "@/pages/auth/ResetPassword";
 
+function App() {
   return (
     <BrowserRouter
       future={{
-        // Opt in to React Router v7 behavior
         v7_startTransition: true,
         v7_relativeSplatPath: true,
       }}
@@ -38,8 +36,11 @@ function App() {
       <PathTracker />
 
       <Routes>
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/auth/reset" element={<ResetPassword />} />
 
+        {/* Protected app */}
         <Route
           element={
             <ProtectedRoute>

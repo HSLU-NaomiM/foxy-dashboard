@@ -147,11 +147,11 @@ export default function MachineDetails() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('machineHistory.title')}</TableHead>
-                    <TableHead>{t('machineDetails.status')}</TableHead>
-                    <TableHead>{t('machineDetails.inventory')}</TableHead>
-                    <TableHead>{t('machineDetails.revenue')}</TableHead>
-                    <TableHead>{t('machineDetails.location')}</TableHead>
+                    <TableHead>{t('alertsTable.alarmStart')}</TableHead>
+                    <TableHead>{t('alertsTable.alarmUpdated')}</TableHead>
+                    <TableHead>{t('alertsTable.errorMessage')}</TableHead>
+                    <TableHead>{t('alertsTable.severity')}</TableHead>
+                    <TableHead>{t('alertsTable.status')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -102,9 +102,11 @@
     "unknown": "??"
   },
   "alertsTable": {
-    "alertName": "Alarmname",
-    "machine": "Automat",
-    "severity": "Schweregrad"
+    "alarmStart": "Alarm Start",
+    "alarmUpdated": "Alarm Update",
+    "errorMessage": "Fehler-Meldung",
+    "severity": "Schweregrad",
+    "status": "Status"
   },
   "common": {
     "ok": "OK",
