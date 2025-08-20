@@ -27,8 +27,8 @@ export default function Login() {
             variables: {
               default: {
                 colors: {
-                  brand: "#1e40af",
-                  brandAccent: "#1d4ed8",
+                  brand: "#e69138",
+                  brandAccent: "#e69138",
                 },
                 fonts: {
                   bodyFontFamily: "Inter, sans-serif",
@@ -44,6 +44,8 @@ export default function Login() {
           }}
           theme="default"
           providers={[]}
+          redirectTo={`${origin}/auth/reset`}
+          view="sign_in"
         />
       </div>
     </div>
