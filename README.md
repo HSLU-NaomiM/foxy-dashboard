@@ -84,10 +84,10 @@ Add the .env file to your .gitignore file to ensure it is not committed to your 
 ## Running the Application
 Start the development server:
 
-npm start
+npm run dev
 
 or
 
 yarn start
 
-Open your web browser and navigate to http://localhost:3000 to view the application.
+Open your web browser and navigate to http://localhost:5173/ to view the application.
