@@ -52,7 +52,7 @@ Navigate to your Supabase project dashboard.
 
 Go to Settings > API.
 
-Copy your Project URL and the service_role key.
+Copy your Project URL and the ANON key. Take the right one!! The service-role key has admin rights and you don't want that key to end up on the user side of the application!!
 
 ## Securely Storing Credentials
 To prevent exposing your sensitive API keys, you should store them in a .env file and access them using process.env.
@@ -64,7 +64,7 @@ Add your credentials to .env:
 Add the following lines to the .env file, replacing the placeholder values with your actual Supabase credentials.  
 
 REACT_APP_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL
-REACT_APP_SUPABASE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY  
+REACT_APP_SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY  
 
 Note: Create React App requires custom environment variables to be prefixed with REACT_APP_ for them to be exposed to the application.
 
