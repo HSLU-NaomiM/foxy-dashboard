@@ -1,4 +1,22 @@
 // src/components/Layout.tsx
+// File Summary:
+// Application shell component providing header, navigation, language switcher, and logout.
+// Renders nested route content via <Outlet/>.
+//
+// Key responsibilities:
+// - Header with brand (logo + title) linking to dashboard.
+// - Navigation bar with active link highlighting.
+// - Language selector bound to i18next.
+// - Logout via Supabase signOut and redirect to login.
+// - Provides consistent page chrome across routes.
+//
+// Dependencies:
+// - react-router-dom: NavLink, Outlet, useNavigate.
+// - supabase-js: signOut.
+// - lucide-react / @lucide/lab: brand icon.
+// - i18next: language switching.
+// - Tailwind CSS: layout, colors, light/dark mode styling.
+
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 import { Icon } from "lucide-react";
@@ -9,33 +27,37 @@ export default function Layout() {
   const navigate = useNavigate();
   const { i18n } = useTranslation();
 
+  // Clear persisted path, sign out, redirect to login
   const logout = async () => {
     localStorage.removeItem("lastPath");
     await supabase.auth.signOut();
     navigate("/login");
   };
 
-
+  // Active link → blue bg, inactive → muted w/ hover
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `text-sm px-3 py-2 rounded-md font-medium ${
       isActive ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-100"
     }`;
 
-
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 font-inter text-zinc-900 dark:text-zinc-100">
       <header className="border-b bg-white dark:bg-zinc-800 px-6 py-4 shadow-sm flex justify-between items-center">
+        {/* Brand logo + title */}
         <NavLink to="/dashboard" className="flex items-center gap-2 hover:opacity-80">
           <Icon iconNode={foxFaceTail} className="w-10 h-10 text-zinc-800 dark:text-zinc-100" />
           <h1 className="text-xl font-bold">Foxy Dashboard</h1>
         </NavLink>
 
+        {/* Primary nav */}
         <nav className="flex gap-4">
           <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
           <NavLink to="/monitoring" className={linkClass}>Monitoring</NavLink>
           <NavLink to="/revenue" className={linkClass}>Revenue</NavLink>
           <NavLink to="/upload" className={linkClass}>Upload</NavLink>
         </nav>
+
+        {/* Language selector + logout */}
         <div className="flex items-center gap-2">
           <select
             value={i18n.language}
@@ -45,6 +67,7 @@ export default function Layout() {
             <option value="en">EN</option>
             <option value="de">DE</option>
           </select>
+
           <button
             onClick={logout}
             className="text-sm px-4 py-2 rounded-md font-medium bg-red-100 text-red-700 hover:bg-red-200 transition"

@@ -1,4 +1,31 @@
 // src/pages/MachineHistory.tsx
+// File Summary:
+// The MachineHistory page shows a chronological timeline of events for a single vending machine.
+// Events include alerts starting/resolving and maintenance actions. Data is fetched from the Supabase
+// view `machine_timeline`, which consolidates machine alerts and maintenance logs into a unified timeline.
+// Key responsibilities:
+// - Fetch machine timeline events filtered by machine_id from URL params.
+// - Render events with badges that visually distinguish event type (alert, resolution, maintenance)
+//   and severity (critical, error, warning, offline, etc.).
+// - Provide navigation back to the previous page.
+// - Handle loading, error, and empty states gracefully.
+//
+// Dependencies:
+// - supabase-js: querying the `machine_timeline` view.
+// - shadcn/ui: Card, Button components for UI consistency.
+// - react-router-dom: for reading machine_id param and navigation.
+// - i18next: translation of event labels and messages.
+//
+// Folder structure notes:
+// - Located in `src/pages/`, each file maps to a top-level route.
+// - The route for this page is typically `/machine/:id/history`.
+//
+// Security notes:
+// - Supabase RLS must permit:
+//   • View `machine_timeline`: SELECT for authenticated users (read-only).  
+//   • Underlying tables (machine_alerts_log, maintenance): protected by policies, but exposed via the view.  
+// - Clients cannot alter timeline data; it is a read-only audit/history representation.
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -26,6 +53,7 @@ export default function MachineHistory() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Maps severity values to CSS badge classes
   const getSeverityBadge = (sev?: string | null) => {
     switch (sev) {
       case "critical":
@@ -41,6 +69,7 @@ export default function MachineHistory() {
     }
   };
 
+  // Maps event types to badge classes
   const getEventBadge = (type: TimelineRow["event_type"]) => {
     switch (type) {
       case "alert_started":
@@ -52,6 +81,7 @@ export default function MachineHistory() {
     }
   };
 
+  // Fetch machine timeline rows from Supabase
   const fetchRows = async () => {
     if (!id) return;
     try {
