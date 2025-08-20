@@ -1,4 +1,32 @@
-// /src/pages/revenue-month-detail.tsx
+// src/pages/revenue-month-detail.tsx
+// File Summary:
+// The RevenueMonthDetail page displays machine-level revenue details for a selected month.
+// It queries the Supabase view `monthly_revenue`, filters by year/month (and optionally currency),
+// and renders a ranked list of machines by total revenue for that period.
+//
+// Key responsibilities:
+// - Parse year/month params from the route and build a YYYY-MM-01 filter date.
+// - Fetch machine-level revenue for that month from Supabase, sorted by revenue descending.
+// - Respect a preferred currency passed via navigation state and enforce filtering if provided.
+// - Display results in a table with machine, location, revenue, and transaction count.
+// - Provide navigation back to the revenue overview via breadcrumbs.
+// - Handle loading, error, and empty states gracefully.
+//
+// Dependencies:
+// - supabase-js: queries the `monthly_revenue` view.
+// - react-router-dom: routing, params, navigation, and breadcrumbs.
+// - shadcn/ui: Breadcrumb components for navigation context.
+// - Intl.NumberFormat: for localized currency formatting.
+//
+// Folder structure notes:
+// - Located in `src/pages/`, this file represents the route `/revenue/:year/:month`.
+// - It complements the main revenue overview page by drilling down into machine-level detail.
+//
+// Security notes:
+// - Supabase RLS must permit:
+//   • View `monthly_revenue`: SELECT for authenticated users (read-only).  
+// - Clients can only read aggregated values; inserts/updates are restricted at the database level.
+
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
@@ -22,7 +50,7 @@ type Row = {
 };
 
 export default function RevenueMonthDetail() {
-  const { year, month } = useParams(); // month is "01".."12"
+  const { year, month } = useParams(); // URL params: year + month
   const { state } = useLocation() as { state?: { currency?: string } };
   const navigate = useNavigate();
 
@@ -32,7 +60,7 @@ export default function RevenueMonthDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Build a YYYY-MM-01 string for equality filtering in the view
+  // Build YYYY-MM-01 string to filter Supabase view
   const monthStart = useMemo(() => `${year}-${month}-01`, [year, month]);
 
   // Human-friendly month label (e.g., "March 2025")
@@ -45,6 +73,7 @@ export default function RevenueMonthDetail() {
     }
   }, [year, month]);
 
+  // Fetch machine-level revenue for the month
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -58,7 +87,7 @@ export default function RevenueMonthDetail() {
         .eq("month", monthStart)
         .order("total_revenue", { ascending: false });
 
-      // If you navigated from a specific currency link, enforce it here
+      // Apply currency filter if passed via navigation state
       if (preferredCurrency) q.eq("currency", preferredCurrency);
 
       const { data, error } = await q;
@@ -73,6 +102,7 @@ export default function RevenueMonthDetail() {
     })();
   }, [monthStart, preferredCurrency]);
 
+  // Format number as currency with given ISO code
   const fmtCurrency = (value: number, currency: string) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency }).format(value ?? 0);
 
@@ -99,7 +129,6 @@ export default function RevenueMonthDetail() {
 
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                {/* Pass the selected year back to the overview as a query param */}
                 <Link to={`/revenue?year=${year}`}>{year}</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -118,6 +147,7 @@ export default function RevenueMonthDetail() {
       {loading && <div>Loading…</div>}
       {error && <div className="text-red-600">{error}</div>}
 
+      {/* Results table */}
       {!loading && !error && (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border rounded-md shadow mt-2">
@@ -143,7 +173,7 @@ export default function RevenueMonthDetail() {
             </tbody>
           </table>
 
-          {/* Optional: small helper line */}
+          {/* Note when currency is filtered */}
           {!!preferredCurrency && (
             <p className="text-xs text-zinc-500 mt-2">
               Showing values in <span className="font-medium">{preferredCurrency}</span>.
