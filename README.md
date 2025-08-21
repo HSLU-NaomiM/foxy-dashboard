@@ -28,10 +28,11 @@ To run this project locally, follow these steps:
 You need to have Node.js and npm (or yarn) installed on your machine.
 
 ## Installation
-Clone the repository:
+Clone the repository:  
 
-git clone https://your-repository-url.git
-cd your-repository-folder
+git clone https://your-repository-url.git  
+
+cd your-repository-folder  
 
 Install the required dependencies:
 
