@@ -64,18 +64,17 @@ Add your credentials to .env:
 Add the following lines to the .env file, replacing the placeholder values with your actual Supabase credentials.  
 
 VITE_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL  
-VITE_SUPABASE_URL=YOUR_SUPABASE_ANON_KEY    
+VITE_SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY     
 
-Note: Create React App requires custom environment variables to be prefixed with REACT_APP_ for them to be exposed to the application.
 
-Update Dashboard.js:
-Modify the src/components/Dashboard.js file to read the credentials from the environment variables.
+Update Dashboard.js:  
+Modify the src/components/Dashboard.js file to read the credentials from the environment variables.     
 
-const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
-const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
+const VITE_SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;  
+const VITE_SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;  
 
-Add .env to .gitignore:
-Add the .env file to your .gitignore file to ensure it is not committed to your version control. This is the most crucial step for security.
+Add .env to .gitignore:  
+Add the .env file to your .gitignore file to ensure it is not committed to your version control. This is the most crucial step for security.  
 
 # .gitignore
 ...  
