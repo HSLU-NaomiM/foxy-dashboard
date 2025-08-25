@@ -303,8 +303,8 @@ export default function Upload() {
         <select className="border rounded-md p-2" value={target} onChange={(e) => setTarget(e.target.value as Target)}>
           <option value="products">{t("upload.products")}</option>
           <option value="deliveries">{t("upload.deliveries")}</option>
-          <option value="inventory">{t("upload.inventory")}</option>
           <option value="machines">{t("upload.machines")}</option>
+          <option value="inventory">{t("upload.inventory")}</option>
         </select>
 
         <div className="ml-auto flex items-center gap-2">
@@ -433,6 +433,5 @@ export default function Upload() {
         </div>
       </div>
     </div>
-    /* Hello World */
   );
 }

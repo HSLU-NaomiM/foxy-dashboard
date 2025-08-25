@@ -1,7 +1,7 @@
   {
   "upload": {
     "title": "Upload (Simple)",
-    "description": "CSV/JSON guided uploader. Products → Deliveries → Inventory → Machines.",
+    "description": "CSV/JSON guided uploader. Products → Deliveries (optional) → Machines → Inventory.",
     "targetTable": "Target table",
     "products": "products",
     "deliveries": "deliveries",
