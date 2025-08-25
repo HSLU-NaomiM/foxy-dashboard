@@ -1,7 +1,7 @@
 {
   "upload": {
     "title": "Hochladen (Einfach)",
-    "description": "Geführter CSV/JSON-Uploader. Produkte → Lieferungen → Inventar → Automaten.",
+    "description": "Geführter CSV/JSON-Uploader. Produkte → Lieferungen (optional) → Automaten → Inventar.",
     "targetTable": "Zieltabelle",
     "products": "produkte",
     "deliveries": "lieferungen",
