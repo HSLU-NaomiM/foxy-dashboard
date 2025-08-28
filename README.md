@@ -21,6 +21,9 @@ Styling: Tailwind CSS
 
 Backend & Database: Supabase
 
+## UML of database
+![alt text](https://github.com/HSLU-NaomiM/foxy-dashboard/blob/main/UML.png?raw=true)
+
 ## Getting Started
 To run this project locally, follow these steps:
 
